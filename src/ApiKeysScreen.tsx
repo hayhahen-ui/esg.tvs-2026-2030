@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { apiKeyStore, maskKey } from "./apiKeys";
+import { AI_MODELS, DEFAULT_AI_MODEL, type ChatModel } from "./ai";
 
 type Which = "tinyfish" | "explabs";
 
@@ -13,6 +14,16 @@ export default function ApiKeysScreen() {
   const [savedTick, setSavedTick] = useState(false);
   const [testing, setTesting] = useState<Which | null>(null);
   const [testMsg, setTestMsg] = useState<Record<string, string>>({});
+  const [models, setModels] = useState<ChatModel[]>(AI_MODELS);
+
+  useEffect(() => {
+    fetch("/api/ai-chat")
+      .then((r) => r.json())
+      .then((d: { models?: ChatModel[] }) => {
+        if (Array.isArray(d.models) && d.models.length) setModels(d.models);
+      })
+      .catch(() => { /* dùng danh sách mặc định */ });
+  }, []);
 
   const save = () => {
     apiKeyStore.save(keys);
@@ -21,7 +32,7 @@ export default function ApiKeysScreen() {
   };
   const clearAll = () => {
     apiKeyStore.clear();
-    setKeys({ tinyfish: "", explabs: "" });
+    setKeys({ tinyfish: "", explabs: "", model: DEFAULT_AI_MODEL });
     setTestMsg({});
   };
 
@@ -65,6 +76,17 @@ export default function ApiKeysScreen() {
         <strong>Lưu ý bảo mật</strong>
         <p>Key lưu trong bộ nhớ trình duyệt của máy này (localStorage) — không dùng trên máy dùng chung.
         Muốn mọi người dùng chung dùng được: quản trị viên đặt biến môi trường <code>TINYFISH_API_KEY</code> / <code>EXPLABS_API_KEY</code> trên Vercel (xem docs/CHATBOT_AI.md). Key nhập ở đây được ưu tiên thấp hơn biến môi trường.</p>
+      </div>
+
+      <div className="card">
+        <h3 style={{ margin: "0 0 4px" }}>Model AI</h3>
+        <p className="text-small text-secondary" style={{ margin: "0 0 10px" }}>Model dùng cho nút “✨ Diễn giải bằng AI” trong chatbot. Danh sách do server cung cấp.</p>
+        <label className="field" style={{ maxWidth: 360 }}>
+          <span className="text-label">Chọn model</span>
+          <select className="input" value={keys.model} onChange={(e) => setKeys((k) => ({ ...k, model: e.target.value }))} aria-label="Chọn model AI">
+            {models.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
+          </select>
+        </label>
       </div>
 
       {FIELDS.map((f) => {

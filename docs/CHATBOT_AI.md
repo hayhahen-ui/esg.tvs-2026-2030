@@ -35,9 +35,9 @@ Trình duyệt ──POST /api/qa-search──▶ Vercel serverless ──X-API-
 > (TinyFish → API Keys; Experiential Labs → API Keys) → thu hồi key cũ và tạo key mới
 > TRƯỚC khi làm các bước dưới.**
 
-**Cách nhanh (không cần Vercel):** mở màn **"Cài đặt API"** trong app (menu bên trái),
-dán key, bấm **"Kiểm tra kết nối"** rồi **"Lưu key"**. Key lưu trên trình duyệt này;
-chatbot dùng ngay không cần redeploy.
+**Cách nhanh (không cần Vercel):** mở màn **"Cài đặt API"** trong app (menu bên trái):
+chọn **model AI**, dán key, bấm **"Kiểm tra kết nối"** rồi **"Lưu key"**.
+Key và model lưu trên trình duyệt này; chatbot dùng ngay không cần redeploy.
 
 **Cách chuẩn cho nhiều người dùng:** Vercel → Project `esg-tvs-2026-2030` →
 **Settings → Environment Variables** → thêm `TINYFISH_API_KEY` / `EXPLABS_API_KEY` →

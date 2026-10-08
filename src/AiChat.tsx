@@ -33,7 +33,7 @@ export default function AiChat({ knowledge }: {
   const [aiBusyId, setAiBusyId] = useState<number | null>(null);
   const [models, setModels] = useState<ChatModel[]>([]);
   const [aiReady, setAiReady] = useState(false);
-  const [model, setModel] = useState<string>(DEFAULT_AI_MODEL);
+  const [model, setModel] = useState<string>(() => apiKeyStore.load().model || DEFAULT_AI_MODEL);
   const [localKeys, setLocalKeys] = useState(() => apiKeyStore.load());
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -41,15 +41,26 @@ export default function AiChat({ knowledge }: {
     const stored = apiKeyStore.load();
     setLocalKeys(stored);
     fetch("/api/ai-chat").then((r) => r.json()).then((d: { configured?: boolean; models?: ChatModel[]; defaultModel?: string }) => {
-      if (d.configured || stored.explabs) {
-        setAiReady(true);
-        if (Array.isArray(d.models) && d.models.length) setModels(d.models);
-        if (d.defaultModel) setModel(d.defaultModel);
+      const serverModels = Array.isArray(d.models) ? d.models : [];
+      if (serverModels.length) {
+        setModels(serverModels);
+        // model đã lưu không còn được server hỗ trợ → dùng mặc định của server
+        if (!serverModels.some((m) => m.id === stored.model) && d.defaultModel) {
+          setModel(d.defaultModel);
+        } else {
+          setModel(stored.model);
+        }
       }
+      if (d.configured || stored.explabs) setAiReady(true);
     }).catch(() => {
       if (stored.explabs) setAiReady(true);
     });
   }, []);
+
+  const changeModel = (id: string) => {
+    setModel(id);
+    apiKeyStore.save({ ...apiKeyStore.load(), model: id });
+  };
 
   const scrollDown = () => setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }), 50);
 
@@ -158,7 +169,7 @@ export default function AiChat({ knowledge }: {
         {aiReady && models.length > 0 && (
           <label className="field" style={{ minWidth: 220 }}>
             <span className="text-small">Model AI</span>
-            <select className="input" value={model} onChange={(e) => setModel(e.target.value)} aria-label="Chọn model AI">
+            <select className="input" value={model} onChange={(e) => changeModel(e.target.value)} aria-label="Chọn model AI">
               {models.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
             </select>
           </label>

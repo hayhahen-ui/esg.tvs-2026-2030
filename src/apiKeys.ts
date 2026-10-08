@@ -2,7 +2,9 @@
 // mà không cần vào Vercel. Key chỉ dùng để gọi proxy cùng origin; môi trường
 // production cho nhiều người dùng vẫn nên đặt biến môi trường trên Vercel.
 
-export interface ApiKeySet { tinyfish: string; explabs: string }
+import { DEFAULT_AI_MODEL, isAllowedModel } from "./ai";
+
+export interface ApiKeySet { tinyfish: string; explabs: string; model: string }
 
 const STORAGE_KEY = "esg_api_keys_v1";
 
@@ -20,17 +22,24 @@ export interface SimpleStorage {
 export function createKeyStore(storage: SimpleStorage) {
   return {
     load(): ApiKeySet {
+      const empty = { tinyfish: "", explabs: "", model: DEFAULT_AI_MODEL };
       try {
         const raw = storage.getItem(STORAGE_KEY);
-        if (!raw) return { tinyfish: "", explabs: "" };
+        if (!raw) return empty;
         const p = JSON.parse(raw) as Partial<ApiKeySet>;
-        return { tinyfish: String(p.tinyfish ?? ""), explabs: String(p.explabs ?? "") };
+        const model = String(p.model ?? DEFAULT_AI_MODEL);
+        return {
+          tinyfish: String(p.tinyfish ?? ""),
+          explabs: String(p.explabs ?? ""),
+          model: isAllowedModel(model) ? model : DEFAULT_AI_MODEL,
+        };
       } catch {
-        return { tinyfish: "", explabs: "" };
+        return empty;
       }
     },
     save(keys: ApiKeySet): void {
-      storage.setItem(STORAGE_KEY, JSON.stringify({ tinyfish: keys.tinyfish.trim(), explabs: keys.explabs.trim() }));
+      const model = isAllowedModel(keys.model) ? keys.model : DEFAULT_AI_MODEL;
+      storage.setItem(STORAGE_KEY, JSON.stringify({ tinyfish: keys.tinyfish.trim(), explabs: keys.explabs.trim(), model }));
     },
     clear(): void {
       storage.removeItem(STORAGE_KEY);
