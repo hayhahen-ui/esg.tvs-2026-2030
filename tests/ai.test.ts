@@ -58,3 +58,14 @@ describe("buildChatMessages", () => {
     expect(AI_GENERATED_DISCLAIMER).toContain("soát xét");
   });
 });
+
+describe("isDecisionsModel", () => {
+  it("nhận diện model decisions theo đuôi -decisions", async () => {
+    const { isDecisionsModel } = await import("../src/ai");
+    expect(isDecisionsModel("gpt-6-luna-decisions")).toBe(true);
+    expect(isDecisionsModel("GPT-6-LUNA-DECISIONS")).toBe(true);
+    expect(isDecisionsModel("claude-haiku-5.5")).toBe(false);
+    expect(isDecisionsModel("qwen3.8-27b-uncensored")).toBe(false);
+    expect(isDecisionsModel("")).toBe(false);
+  });
+});

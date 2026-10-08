@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ARTICLES, QUICK_QUESTIONS } from "./content";
-import { AI_DISCLAIMER, AI_GENERATED_DISCLAIMER, DEFAULT_AI_MODEL, type ChatModel, type WebResult } from "./ai";
+import { AI_DISCLAIMER, AI_GENERATED_DISCLAIMER, DEFAULT_AI_MODEL, isDecisionsModel, type ChatModel, type WebResult } from "./ai";
 import { apiKeyStore, customModelStore } from "./apiKeys";
 
 interface ArticleLike { id: string; title: string; summary: string; content: string; category: string; source: string }
@@ -42,16 +42,18 @@ export default function AiChat({ knowledge }: {
     const stored = apiKeyStore.load();
     setLocalKeys(stored);
     setCustomModels(customModelStore.load());
+    // Model decisions đã lưu cho chat từ trước → chuyển về mặc định.
+    const base = isDecisionsModel(stored.model) ? DEFAULT_AI_MODEL : stored.model;
+    if (base !== stored.model) apiKeyStore.save({ ...stored, model: base });
+    setModel(base);
     fetch("/api/ai-chat").then((r) => r.json()).then((d: { configured?: boolean; models?: ChatModel[]; defaultModel?: string }) => {
       const serverModels = Array.isArray(d.models) ? d.models : [];
       if (serverModels.length) {
         setModels(serverModels);
-        const known = [...serverModels, ...customModelStore.load()];
+        const known = [...serverModels, ...customModelStore.load()].filter((m) => !isDecisionsModel(m.id));
         // model đã lưu không còn được hỗ trợ → dùng mặc định của server
-        if (!known.some((m) => m.id === stored.model) && d.defaultModel) {
+        if (!known.some((m) => m.id === base) && d.defaultModel) {
           setModel(d.defaultModel);
-        } else {
-          setModel(stored.model);
         }
       }
       if (d.configured || stored.explabs) setAiReady(true);
@@ -60,10 +62,11 @@ export default function AiChat({ knowledge }: {
     });
   }, []);
 
+  // Model decisions không dùng cho chat → ẩn khỏi dropdown.
   const allModels: ChatModel[] = useMemo(() => [
     ...models,
     ...customModels.filter((c) => !models.some((m) => m.id === c.id)),
-  ], [models, customModels]);
+  ].filter((m) => !isDecisionsModel(m.id)), [models, customModels]);
 
   const changeModel = (id: string) => {
     setModel(id);

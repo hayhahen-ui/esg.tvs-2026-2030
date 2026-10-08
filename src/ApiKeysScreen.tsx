@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { apiKeyStore, customModelStore, maskKey, DEFAULT_DECIDE_MODEL } from "./apiKeys";
-import { AI_MODELS, DEFAULT_AI_MODEL, type ChatModel } from "./ai";
+import { AI_MODELS, DEFAULT_AI_MODEL, isDecisionsModel, type ChatModel } from "./ai";
 
 type Which = "tinyfish" | "explabs";
 
@@ -11,12 +11,16 @@ const FIELDS: Array<{ id: Which; label: string; desc: string; endpoint: string }
 
 /** Gợi ý theo mã lỗi khi kiểm tra kết nối thất bại. */
 function hintFor(d: { error?: string; status?: number }): string {
+  if (d.error === "decisions_model") return "model decisions chỉ dùng ở thẻ Decisions API bên dưới (/api/ai-decide), không dùng cho chat.";
   if (d.status === 503) return "model này chưa được triển khai phía nhà cung cấp — thử model khác hoặc hỏi nhà cung cấp.";
   if (d.status === 401 || d.status === 403) return "kiểm tra lại key.";
   if (d.status === 429) return "bị giới hạn tốc độ — đợi một lúc rồi thử lại.";
   if (d.error === "empty_reply") return "máy chủ trả về rỗng — thử lại.";
   return "kiểm tra lại key.";
 }
+
+/** Các model decisions đã biết (dùng cho gợi ý ở thẻ Decisions API). */
+const KNOWN_DECIDE_MODELS = ["gpt-6-luna-decisions"];
 
 export default function ApiKeysScreen() {
   const [keys, setKeys] = useState(apiKeyStore.load());
@@ -32,6 +36,13 @@ export default function ApiKeysScreen() {
   const [decideMsg, setDecideMsg] = useState("");
 
   useEffect(() => {
+    // Model decisions đã lưu cho chat từ trước → chuyển về mặc định, tránh 503 khó hiểu.
+    const stored = apiKeyStore.load();
+    if (isDecisionsModel(stored.model)) {
+      apiKeyStore.save({ ...stored, model: DEFAULT_AI_MODEL });
+      setKeys((k) => ({ ...k, model: DEFAULT_AI_MODEL }));
+      setModelMsg(`⚠️ “${stored.model}” là model Decisions — chỉ dùng ở thẻ Decisions API bên dưới, không dùng cho chat. Đã chuyển chat về ${DEFAULT_AI_MODEL}.`);
+    }
     fetch("/api/ai-chat")
       .then((r) => r.json())
       .then((d: { models?: ChatModel[] }) => {
@@ -40,12 +51,22 @@ export default function ApiKeysScreen() {
       .catch(() => { /* dùng danh sách mặc định */ });
   }, []);
 
+  // Model decisions không hiện trong dropdown chat (chọn cũng chỉ nhận 503).
   const allModels: ChatModel[] = [
     ...models,
     ...customModels.filter((c) => !models.some((m) => m.id === c.id)),
-  ];
+  ].filter((m) => !isDecisionsModel(m.id));
 
   const addModel = () => {
+    const id = newModelId.trim();
+    // Mapping: model decisions thuộc về thẻ Decisions API, không thêm vào dropdown chat.
+    if (isDecisionsModel(id)) {
+      setKeys((k) => ({ ...k, decideModel: id }));
+      setNewModelId("");
+      setNewModelLabel("");
+      setModelMsg(`✅ “${id}” là model Decisions — đã đặt làm model Decisions ở thẻ bên dưới.`);
+      return;
+    }
     const r = customModelStore.add(
       { id: newModelId, label: newModelLabel },
       models.map((m) => m.id),
@@ -220,12 +241,20 @@ export default function ApiKeysScreen() {
         <label className="field" style={{ maxWidth: 360 }}>
           <span className="text-label">Model decisions</span>
           <input
-            className="input" placeholder={DEFAULT_DECIDE_MODEL}
+            className="input" placeholder={DEFAULT_DECIDE_MODEL} list="decide-models"
             value={keys.decideModel}
             onChange={(e) => setKeys((k) => ({ ...k, decideModel: e.target.value }))}
             aria-label="Model decisions" spellCheck={false}
           />
+          <datalist id="decide-models">
+            {KNOWN_DECIDE_MODELS.map((m) => <option key={m} value={m} />)}
+          </datalist>
         </label>
+        {keys.decideModel.trim() && !isDecisionsModel(keys.decideModel) && (
+          <p className="text-small" style={{ marginTop: 6, color: "var(--warn, #e8a33d)" }}>
+            ⚠️ Model này có vẻ không phải model decisions — nếu test báo 503, hãy kiểm tra lại tên model.
+          </p>
+        )}
         <div className="row wrap gap" style={{ marginTop: 10 }}>
           <button className="button" disabled={decideTesting || !keys.explabs.trim()} onClick={testDecide}>
             {decideTesting ? "Đang kiểm tra…" : "Kiểm tra kết nối"}

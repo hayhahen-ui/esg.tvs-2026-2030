@@ -86,6 +86,11 @@ export default async function handler(req, res) {
   }
   const wanted = String(body.model ?? DEFAULT_AI_MODEL);
   const model = isAllowedModel(wanted) ? wanted : DEFAULT_AI_MODEL;
+  // Model decisions không dùng cho chat — chặn sớm với lỗi rõ ràng thay vì 503 khó hiểu từ upstream.
+  if (/-decisions$/i.test(model)) {
+    res.status(200).json({ ok: false, error: "decisions_model", message: "Model decisions chỉ dùng ở /api/ai-decide, không dùng cho chat." });
+    return;
+  }
   if (String(body.action ?? "") === "ping") {
     // max_tokens=16: một số route (vd họ gpt-6-*) yêu cầu max_tokens tối thiểu 16.
     const out = await doChat(key, model, [{ role: "user", content: "Trả lời đúng một từ: OK" }], 16, 30000);

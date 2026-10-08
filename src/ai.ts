@@ -51,6 +51,12 @@ export function isAllowedModel(id: string): boolean {
   return AI_MODELS.some((m) => m.id === id);
 }
 
+/** Model decisions (tên kết thúc bằng -decisions) chỉ dùng cho Decisions API
+ *  (/api/ai-decide), không dùng cho chat (/api/ai-chat). */
+export function isDecisionsModel(id: string): boolean {
+  return /-decisions$/i.test(String(id ?? "").trim());
+}
+
 export const AI_SYSTEM_PROMPT = [
   "Bạn là trợ lý ESG cho cán bộ công nhân viên nhà máy giày (Việt Nam).",
   "Trả lời bằng tiếng Việt, ngắn gọn, dễ hiểu với công nhân.",
