@@ -88,7 +88,14 @@ export default function ApiKeysScreen() {
       if (d.ok) {
         setTestMsg((m) => ({ ...m, [which]: `✅ Kết nối OK${d.count !== undefined ? ` (thử tìm: ${d.count} kết quả)` : ""}${d.model ? ` · model ${d.model}` : ""}` }));
       } else {
-        setTestMsg((m) => ({ ...m, [which]: `❌ Lỗi: ${d.error ?? "không rõ"}${d.status ? ` (mã ${d.status})` : ""} — kiểm tra lại key.` }));
+        const hint = d.status === 503
+          ? "model này chưa được triển khai phía nhà cung cấp — thử model khác hoặc hỏi nhà cung cấp."
+          : d.status === 401 || d.status === 403
+            ? "kiểm tra lại key."
+            : d.status === 429
+              ? "bị giới hạn tốc độ — đợi một lúc rồi thử lại."
+              : "kiểm tra lại key.";
+        setTestMsg((m) => ({ ...m, [which]: `❌ Lỗi: ${d.error ?? "không rõ"}${d.status ? ` (mã ${d.status})` : ""} — ${hint}` }));
       }
     } catch {
       setTestMsg((m) => ({ ...m, [which]: "❌ Không kết nối được server, thử lại sau." }));
