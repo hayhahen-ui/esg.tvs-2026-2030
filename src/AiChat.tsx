@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ARTICLES, QUICK_QUESTIONS } from "./content";
-import { AI_DISCLAIMER, AI_GENERATED_DISCLAIMER, DEFAULT_AI_MODEL, isDecisionsModel, type ChatModel, type WebResult } from "./ai";
+import { AI_DISCLAIMER, AI_GENERATED_DISCLAIMER, DEFAULT_AI_MODEL, buildDecideQuestion, formatDecideAnswers, isDecisionsModel, type ChatModel, type DecideAnswer, type WebResult } from "./ai";
 import { apiKeyStore, customModelStore } from "./apiKeys";
 
 interface ArticleLike { id: string; title: string; summary: string; content: string; category: string; source: string }
@@ -8,7 +8,7 @@ interface ChatMsg {
   id: number;
   role: "user" | "bot";
   text: string;
-  tag?: "local" | "web" | "ai" | "info";
+  tag?: "local" | "web" | "ai" | "decide" | "info";
   results?: WebResult[];
   webQuery?: string;
   aiContext?: string;
@@ -42,17 +42,14 @@ export default function AiChat({ knowledge }: {
     const stored = apiKeyStore.load();
     setLocalKeys(stored);
     setCustomModels(customModelStore.load());
-    // Model decisions đã lưu cho chat từ trước → chuyển về mặc định.
-    const base = isDecisionsModel(stored.model) ? DEFAULT_AI_MODEL : stored.model;
-    if (base !== stored.model) apiKeyStore.save({ ...stored, model: base });
-    setModel(base);
+    setModel(stored.model);
     fetch("/api/ai-chat").then((r) => r.json()).then((d: { configured?: boolean; models?: ChatModel[]; defaultModel?: string }) => {
       const serverModels = Array.isArray(d.models) ? d.models : [];
       if (serverModels.length) {
         setModels(serverModels);
-        const known = [...serverModels, ...customModelStore.load()].filter((m) => !isDecisionsModel(m.id));
-        // model đã lưu không còn được hỗ trợ → dùng mặc định của server
-        if (!known.some((m) => m.id === base) && d.defaultModel) {
+        const known = [...serverModels, ...customModelStore.load()];
+        // model đã lưu không còn trong danh sách → dùng mặc định của server
+        if (!known.some((m) => m.id === stored.model) && d.defaultModel) {
           setModel(d.defaultModel);
         }
       }
@@ -62,11 +59,16 @@ export default function AiChat({ knowledge }: {
     });
   }, []);
 
-  // Model decisions không dùng cho chat → ẩn khỏi dropdown.
+  // Tất cả model (chat + decisions) đều chọn được; model decisions sẽ gọi Decisions API.
   const allModels: ChatModel[] = useMemo(() => [
     ...models,
     ...customModels.filter((c) => !models.some((m) => m.id === c.id)),
-  ].filter((m) => !isDecisionsModel(m.id)), [models, customModels]);
+  ], [models, customModels]);
+
+  const modelLabel = (id: string) => {
+    const m = allModels.find((x) => x.id === id);
+    return (m?.label ?? id) + (isDecisionsModel(id) ? " ⚖️" : "");
+  };
 
   const changeModel = (id: string) => {
     setModel(id);
@@ -173,6 +175,40 @@ export default function AiChat({ knowledge }: {
     }
   };
 
+  /** Model decisions: gọi Decisions API thay vì chat — trả verdict có cấu trúc. */
+  const askDecide = async (msg: ChatMsg) => {
+    const question = msg.webQuery ?? "";
+    if (!question || aiBusyId !== null) return;
+    setAiBusyId(msg.id);
+    try {
+      const questions = buildDecideQuestion();
+      const input = `Câu hỏi: ${question.trim().slice(0, 1000)}${msg.aiContext?.trim() ? `\n\nNgữ cảnh tham khảo:\n${msg.aiContext.trim().slice(0, 2800)}` : ""}`;
+      const r = await fetch("/api/ai-decide", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input, questions, model, apiKey: localKeys.explabs || undefined }),
+      });
+      const data = await r.json().catch(() => ({})) as { answers?: DecideAnswer[]; error?: string; status?: number };
+      if (r.status === 501) {
+        setMsgs((m) => [...m, {
+          id: nextId++, role: "bot", tag: "info",
+          text: "Chưa có key AI. Nhập key tại màn “Cài đặt API” (menu bên trái), hoặc quản trị viên thêm biến môi trường EXPLABS_API_KEY trên Vercel.",
+        }]);
+      } else if (!r.ok || !Array.isArray(data.answers)) {
+        setMsgs((m) => [...m, { id: nextId++, role: "bot", tag: "info", text: "AI tạm thời không đánh giá được, bạn thử lại sau ít phút." }]);
+      } else {
+        setMsgs((m) => [...m, { id: nextId++, role: "bot", tag: "decide", text: formatDecideAnswers(data.answers!, questions, modelLabel(model)) }]);
+      }
+    } catch {
+      setMsgs((m) => [...m, { id: nextId++, role: "bot", tag: "info", text: "Không kết nối được dịch vụ AI, bạn thử lại sau." }]);
+    } finally {
+      setAiBusyId(null);
+      scrollDown();
+    }
+  };
+
+  const useDecide = isDecisionsModel(model);
+
   return (
     <div className="card">
       <div className="row between wrap" style={{ marginBottom: 4 }}>
@@ -181,7 +217,7 @@ export default function AiChat({ knowledge }: {
           <label className="field" style={{ minWidth: 220 }}>
             <span className="text-small">Model AI</span>
             <select className="input" value={model} onChange={(e) => changeModel(e.target.value)} aria-label="Chọn model AI">
-              {allModels.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
+              {allModels.map((m) => <option key={m.id} value={m.id}>{m.label}{isDecisionsModel(m.id) ? " ⚖️" : ""}</option>)}
             </select>
           </label>
         )}
@@ -195,6 +231,7 @@ export default function AiChat({ knowledge }: {
             {m.role === "bot" && m.tag === "local" && <span className="src-tag">📚 Thư viện nội bộ</span>}
             {m.role === "bot" && m.tag === "web" && <span className="src-tag">🌐 Kết quả web (TinyFish)</span>}
             {m.role === "bot" && m.tag === "ai" && <span className="src-tag">✨ AI diễn giải</span>}
+            {m.role === "bot" && m.tag === "decide" && <span className="src-tag">⚖️ AI đánh giá</span>}
             <div style={{ whiteSpace: "pre-wrap" }}>{m.text}</div>
             {m.results && (
               <ul className="web-results">
@@ -216,8 +253,8 @@ export default function AiChat({ knowledge }: {
                   </button>
                 )}
                 {aiReady && (
-                  <button className="button" disabled={aiBusyId !== null} onClick={() => askAi(m)}>
-                    {aiBusyId === m.id ? "AI đang trả lời…" : "✨ Diễn giải bằng AI"}
+                  <button className="button" disabled={aiBusyId !== null} onClick={() => (useDecide ? askDecide(m) : askAi(m))}>
+                    {aiBusyId === m.id ? "AI đang xử lý…" : useDecide ? "⚖️ Đánh giá bằng AI" : "✨ Diễn giải bằng AI"}
                   </button>
                 )}
               </div>

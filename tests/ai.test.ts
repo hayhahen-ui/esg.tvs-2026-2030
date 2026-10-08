@@ -69,3 +69,28 @@ describe("isDecisionsModel", () => {
     expect(isDecisionsModel("")).toBe(false);
   });
 });
+
+describe("decisions helpers", () => {
+  it("buildDecideQuestion trả 1 câu hỏi choice hợp lệ", async () => {
+    const { buildDecideQuestion } = await import("../src/ai");
+    const qs = buildDecideQuestion();
+    expect(qs).toHaveLength(1);
+    expect(qs[0].type).toBe("choice");
+    expect(qs[0].choices.length).toBeGreaterThanOrEqual(2);
+  });
+  it("formatDecideAnswers định dạng verdict + xác suất", async () => {
+    const { buildDecideQuestion, formatDecideAnswers } = await import("../src/ai");
+    const qs = buildDecideQuestion();
+    const text = formatDecideAnswers([{
+      name: "danhgia", choice: "can_kiem_chung", confidence: 0.8,
+      probabilities: [
+        { value: "dang_tham_khao", probability: 0.15 },
+        { value: "can_kiem_chung", probability: 0.8 },
+        { value: "khong_phu_hop", probability: 0.05 },
+      ],
+    }], qs, "gpt-6-luna-decisions");
+    expect(text).toContain("⚖️ Đánh giá bằng AI (gpt-6-luna-decisions)");
+    expect(text).toContain("80%");
+    expect(text).toContain("Chưa đủ cơ sở");
+  });
+});

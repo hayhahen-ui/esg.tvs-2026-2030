@@ -6,7 +6,7 @@ type Which = "tinyfish" | "explabs";
 
 const FIELDS: Array<{ id: Which; label: string; desc: string; endpoint: string }> = [
   { id: "tinyfish", label: "TinyFish API Key", desc: "Dùng cho nút “🔍 Tìm trên web” trong chatbot. Search API hiện miễn phí.", endpoint: "/api/qa-search" },
-  { id: "explabs", label: "Experiential Labs API Key", desc: "Dùng cho nút “✨ Diễn giải bằng AI” (model Claude Haiku 5.5).", endpoint: "/api/ai-chat" },
+  { id: "explabs", label: "Experiential Labs API Key", desc: "Dùng cho nút AI trong chatbot. Model decisions (⚖️) tự gọi Decisions API.", endpoint: "/api/ai-chat" },
 ];
 
 /** Gợi ý theo mã lỗi khi kiểm tra kết nối thất bại. */
@@ -36,13 +36,6 @@ export default function ApiKeysScreen() {
   const [decideMsg, setDecideMsg] = useState("");
 
   useEffect(() => {
-    // Model decisions đã lưu cho chat từ trước → chuyển về mặc định, tránh 503 khó hiểu.
-    const stored = apiKeyStore.load();
-    if (isDecisionsModel(stored.model)) {
-      apiKeyStore.save({ ...stored, model: DEFAULT_AI_MODEL });
-      setKeys((k) => ({ ...k, model: DEFAULT_AI_MODEL }));
-      setModelMsg(`⚠️ “${stored.model}” là model Decisions — chỉ dùng ở thẻ Decisions API bên dưới, không dùng cho chat. Đã chuyển chat về ${DEFAULT_AI_MODEL}.`);
-    }
     fetch("/api/ai-chat")
       .then((r) => r.json())
       .then((d: { models?: ChatModel[] }) => {
@@ -51,22 +44,13 @@ export default function ApiKeysScreen() {
       .catch(() => { /* dùng danh sách mặc định */ });
   }, []);
 
-  // Model decisions không hiện trong dropdown chat (chọn cũng chỉ nhận 503).
+  // Tất cả model (chat + decisions) đều chọn được; model decisions (⚖️) sẽ gọi Decisions API.
   const allModels: ChatModel[] = [
     ...models,
     ...customModels.filter((c) => !models.some((m) => m.id === c.id)),
-  ].filter((m) => !isDecisionsModel(m.id));
+  ];
 
   const addModel = () => {
-    const id = newModelId.trim();
-    // Mapping: model decisions thuộc về thẻ Decisions API, không thêm vào dropdown chat.
-    if (isDecisionsModel(id)) {
-      setKeys((k) => ({ ...k, decideModel: id }));
-      setNewModelId("");
-      setNewModelLabel("");
-      setModelMsg(`✅ “${id}” là model Decisions — đã đặt làm model Decisions ở thẻ bên dưới.`);
-      return;
-    }
     const r = customModelStore.add(
       { id: newModelId, label: newModelLabel },
       models.map((m) => m.id),
@@ -109,10 +93,13 @@ export default function ApiKeysScreen() {
     }
     setTesting(which);
     try {
-      const payload = which === "explabs"
-        ? { action: "ping", apiKey, model: keys.model }
-        : { action: "ping", apiKey };
-      const r = await fetch(field.endpoint, {
+      // Smart routing: model decisions → test qua Decisions API, model chat → qua chat API.
+      const useDecide = which === "explabs" && isDecisionsModel(keys.model);
+      const endpoint = useDecide ? "/api/ai-decide" : field.endpoint;
+      const payload = which === "tinyfish"
+        ? { action: "ping", apiKey }
+        : { action: "ping", apiKey, model: keys.model };
+      const r = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -175,11 +162,11 @@ export default function ApiKeysScreen() {
 
       <div className="card">
         <h3 style={{ margin: "0 0 4px" }}>Model AI</h3>
-        <p className="text-small text-secondary" style={{ margin: "0 0 10px" }}>Model dùng cho nút “✨ Diễn giải bằng AI” trong chatbot. Danh sách do server cung cấp; bạn có thể tự thêm model khác bên dưới.</p>
+        <p className="text-small text-secondary" style={{ margin: "0 0 10px" }}>Model dùng cho nút AI trong chatbot. Model có ⚖️ là model decisions — nút AI sẽ gọi Decisions API để đánh giá có cấu trúc thay vì diễn giải chat.</p>
         <label className="field" style={{ maxWidth: 360 }}>
           <span className="text-label">Chọn model</span>
           <select className="input" value={keys.model} onChange={(e) => setKeys((k) => ({ ...k, model: e.target.value }))} aria-label="Chọn model AI">
-            {allModels.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
+            {allModels.map((m) => <option key={m.id} value={m.id}>{m.label}{isDecisionsModel(m.id) ? " ⚖️" : ""}</option>)}
           </select>
         </label>
         <div className="row wrap gap" style={{ marginTop: 10 }}>

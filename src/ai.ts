@@ -57,6 +57,48 @@ export function isDecisionsModel(id: string): boolean {
   return /-decisions$/i.test(String(id ?? "").trim());
 }
 
+// --- Decisions API: câu hỏi đánh giá mặc định cho chatbot ---
+
+export interface DecideChoice { value: string; description?: string }
+export interface DecideQuestion { type: "choice"; name: string; instructions?: string; choices: DecideChoice[] }
+export interface DecideAnswer {
+  type?: string; name?: string; choice?: string;
+  probabilities?: Array<{ value: string; probability: number }>;
+  confidence?: number;
+}
+
+/** Câu hỏi đánh giá mặc định khi dùng model decisions trong chatbot:
+ *  nội dung trả lời có đáng tin để tham khảo không? */
+export function buildDecideQuestion(): DecideQuestion[] {
+  return [{
+    type: "choice",
+    name: "danhgia",
+    instructions: "Dựa vào ngữ cảnh được cung cấp, nội dung trả lời cho câu hỏi có đáng tin để tham khảo không?",
+    choices: [
+      { value: "dang_tham_khao", description: "Có cơ sở trong ngữ cảnh, đáng tham khảo (vẫn cần chuyên gia nội bộ soát xét)." },
+      { value: "can_kiem_chung", description: "Chưa đủ cơ sở, cần kiểm chứng thêm trước khi áp dụng." },
+      { value: "khong_phu_hop", description: "Không phù hợp hoặc không có cơ sở trong ngữ cảnh." },
+    ],
+  }];
+}
+
+/** Định dạng kết quả decisions thành văn bản hiển thị trong chat. */
+export function formatDecideAnswers(answers: DecideAnswer[], questions: DecideQuestion[], modelLabel: string): string {
+  const desc = (q: DecideQuestion | undefined, v?: string) =>
+    q?.choices.find((c) => c.value === v)?.description ?? v ?? "?";
+  const pct = (p?: number) => (p === undefined || Number.isNaN(p) ? "?" : `${Math.round(p * 100)}%`);
+  const lines = [`⚖️ Đánh giá bằng AI (${modelLabel}):`];
+  for (const a of answers) {
+    const q = questions.find((qq) => qq.name === a.name);
+    lines.push(`→ Kết luận: ${desc(q, a.choice)} (độ tin cậy ${pct(a.confidence)})`);
+    if (a.probabilities?.length) {
+      lines.push(`Xác suất: ${a.probabilities.map((p) => `${desc(q, p.value)} ${pct(p.probability)}`).join(" · ")}`);
+    }
+  }
+  lines.push("", AI_GENERATED_DISCLAIMER);
+  return lines.join("\n");
+}
+
 export const AI_SYSTEM_PROMPT = [
   "Bạn là trợ lý ESG cho cán bộ công nhân viên nhà máy giày (Việt Nam).",
   "Trả lời bằng tiếng Việt, ngắn gọn, dễ hiểu với công nhân.",
