@@ -33,10 +33,31 @@ function buildChatMessages(question, context) {
   ];
 }
 
-export default async function handler(req, res) {
-  const key = process.env.EXPLABS_API_KEY;
+async function doChat(key, model, messages, maxTokens, timeoutMs) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const upstream = await fetch("https://api.experientiallabs.ai/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+      body: JSON.stringify({ model, messages, temperature: 0.3, max_tokens: maxTokens }),
+      signal: controller.signal,
+    });
+    if (!upstream.ok) return { ok: false, status: upstream.status };
+    const data = await upstream.json();
+    const reply = String(data?.choices?.[0]?.message?.content ?? "").trim();
+    if (!reply) return { ok: false, error: "empty_reply" };
+    return { ok: true, reply };
+  } catch (err) {
+    return { ok: false, message: err instanceof Error ? err.message : "fetch failed" };
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
+export default async function handler(req, res) {
   if (req.method === "GET") {
+    const key = process.env.EXPLABS_API_KEY;
     res.status(200).json({ configured: Boolean(key), models: AI_MODELS, defaultModel: DEFAULT_AI_MODEL });
     return;
   }
@@ -44,53 +65,38 @@ export default async function handler(req, res) {
     res.status(405).json({ error: "method_not_allowed" });
     return;
   }
-  if (!key) {
-    res.status(501).json({
-      error: "not_configured",
-      message:
-        "Chưa cấu hình EXPLABS_API_KEY trên server. Quản trị viên thêm biến môi trường này trong Vercel (Project → Settings → Environment Variables), xem docs/CHATBOT_AI.md.",
-    });
-    return;
-  }
   let body = {};
   try {
     body = typeof req.body === "string" ? JSON.parse(req.body) : req.body ?? {};
   } catch { body = {}; }
-  const question = String(body.question ?? "").trim().slice(0, 1000);
-  const context = String(body.context ?? "").slice(0, 4000);
+  // Ưu tiên biến môi trường; key nhập trong app (Cài đặt API) là phương án dự phòng.
+  const key = process.env.EXPLABS_API_KEY || String(body.apiKey ?? "").trim();
+  if (!key) {
+    res.status(501).json({
+      error: "not_configured",
+      message:
+        "Chưa cấu hình EXPLABS_API_KEY. Nhập key tại màn “Cài đặt API” trong app, hoặc quản trị viên thêm biến môi trường trên Vercel (xem docs/CHATBOT_AI.md).",
+    });
+    return;
+  }
   const wanted = String(body.model ?? DEFAULT_AI_MODEL);
   const model = isAllowedModel(wanted) ? wanted : DEFAULT_AI_MODEL;
+  if (String(body.action ?? "") === "ping") {
+    const out = await doChat(key, model, [{ role: "user", content: "Trả lời đúng một từ: OK" }], 5, 30000);
+    if (out.ok) res.status(200).json({ ok: true, model });
+    else res.status(200).json({ ok: false, error: out.error ?? "upstream_error", status: out.status, message: out.message });
+    return;
+  }
+  const question = String(body.question ?? "").trim().slice(0, 1000);
+  const context = String(body.context ?? "").slice(0, 4000);
   if (!question) {
     res.status(400).json({ error: "empty_question" });
     return;
   }
-
-  try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 60000);
-    let upstream;
-    try {
-      upstream = await fetch("https://api.experientiallabs.ai/v1/chat/completions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-        body: JSON.stringify({ model, messages: buildChatMessages(question, context), temperature: 0.3, max_tokens: 800 }),
-        signal: controller.signal,
-      });
-    } finally {
-      clearTimeout(timer);
-    }
-    if (!upstream.ok) {
-      res.status(502).json({ error: "upstream_error", status: upstream.status });
-      return;
-    }
-    const data = await upstream.json();
-    const reply = String(data?.choices?.[0]?.message?.content ?? "").trim();
-    if (!reply) {
-      res.status(502).json({ error: "empty_reply" });
-      return;
-    }
-    res.status(200).json({ reply, model });
-  } catch (err) {
-    res.status(502).json({ error: "upstream_error", message: err instanceof Error ? err.message : "fetch failed" });
+  const out = await doChat(key, model, buildChatMessages(question, context), 800, 60000);
+  if (!out.ok) {
+    res.status(502).json({ error: out.error ?? "upstream_error", status: out.status, message: out.message });
+    return;
   }
+  res.status(200).json({ reply: out.reply, model });
 }

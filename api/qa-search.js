@@ -28,46 +28,56 @@ function normalizeResults(data) {
   return out;
 }
 
+async function doSearch(key, query) {
+  const url = "https://api.search.tinyfish.ai?query=" + encodeURIComponent(query) + "&language=vi";
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 15000);
+  try {
+    const upstream = await fetch(url, { headers: { "X-API-Key": key }, signal: controller.signal });
+    if (!upstream.ok) return { ok: false, status: upstream.status };
+    const data = await upstream.json();
+    return { ok: true, results: normalizeResults(data) };
+  } catch (err) {
+    return { ok: false, message: err instanceof Error ? err.message : "fetch failed" };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.status(405).json({ error: "method_not_allowed" });
-    return;
-  }
-  const key = process.env.TINYFISH_API_KEY;
-  if (!key) {
-    res.status(501).json({
-      error: "not_configured",
-      message:
-        "Chưa cấu hình TINYFISH_API_KEY trên server. Quản trị viên thêm biến môi trường này trong Vercel (Project → Settings → Environment Variables), xem docs/CHATBOT_AI.md.",
-    });
     return;
   }
   let body = {};
   try {
     body = typeof req.body === "string" ? JSON.parse(req.body) : req.body ?? {};
   } catch { body = {}; }
+  // Ưu tiên biến môi trường; key nhập trong app (Cài đặt API) là phương án dự phòng.
+  const key = process.env.TINYFISH_API_KEY || String(body.apiKey ?? "").trim();
+  if (!key) {
+    res.status(501).json({
+      error: "not_configured",
+      message:
+        "Chưa cấu hình TINYFISH_API_KEY. Nhập key tại màn “Cài đặt API” trong app, hoặc quản trị viên thêm biến môi trường trên Vercel (xem docs/CHATBOT_AI.md).",
+    });
+    return;
+  }
+  if (String(body.action ?? "") === "ping") {
+    const out = await doSearch(key, "kiểm tra kết nối");
+    if (out.ok) res.status(200).json({ ok: true, count: out.results.length });
+    else res.status(200).json({ ok: false, error: "upstream_error", status: out.status, message: out.message });
+    return;
+  }
   const query = String(body.query ?? "").trim().slice(0, 300);
   if (!query) {
     res.status(400).json({ error: "empty_query" });
     return;
   }
-  try {
-    const url = "https://api.search.tinyfish.ai?query=" + encodeURIComponent(query) + "&language=vi";
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 15000);
-    let upstream;
-    try {
-      upstream = await fetch(url, { headers: { "X-API-Key": key }, signal: controller.signal });
-    } finally {
-      clearTimeout(timer);
-    }
-    if (!upstream.ok) {
-      res.status(502).json({ error: "upstream_error", status: upstream.status });
-      return;
-    }
-    const data = await upstream.json();
-    res.status(200).json({ results: normalizeResults(data) });
-  } catch (err) {
-    res.status(502).json({ error: "upstream_error", message: err instanceof Error ? err.message : "fetch failed" });
+  const out = await doSearch(key, query);
+  if (!out.ok) {
+    res.status(502).json({ error: "upstream_error", status: out.status, message: out.message });
+    return;
   }
+  res.status(200).json({ results: out.results });
 }

@@ -35,15 +35,13 @@ Trình duyệt ──POST /api/qa-search──▶ Vercel serverless ──X-API-
 > (TinyFish → API Keys; Experiential Labs → API Keys) → thu hồi key cũ và tạo key mới
 > TRƯỚC khi làm các bước dưới.**
 
-1. TinyFish Dashboard → **API Keys** → tạo key mới (Search API hiện miễn phí).
-2. Experiential Labs → **API Keys** → tạo key mới (model Claude Haiku 5.5 đang free).
-3. Vercel → Project `esg-tvs-2026-2030` → **Settings → Environment Variables** →
-   thêm `TINYFISH_API_KEY` và `EXPLABS_API_KEY` → **Save**.
-4. **Redeploy** (Deployments → … → Redeploy) để biến môi trường có hiệu lực.
-5. Kiểm tra: màn Hỏi đáp → khung chat → dropdown "Model AI" hiện ra → hỏi thử →
-   "🔍 Tìm trên web" và "✨ Diễn giải bằng AI" đều hoạt động.
+**Cách nhanh (không cần Vercel):** mở màn **"Cài đặt API"** trong app (menu bên trái),
+dán key, bấm **"Kiểm tra kết nối"** rồi **"Lưu key"**. Key lưu trên trình duyệt này;
+chatbot dùng ngay không cần redeploy.
 
-Không cấu hình key: chatbot vẫn chạy ở chế độ thư viện nội bộ, không lỗi.
+**Cách chuẩn cho nhiều người dùng:** Vercel → Project `esg-tvs-2026-2030` →
+**Settings → Environment Variables** → thêm `TINYFISH_API_KEY` / `EXPLABS_API_KEY` →
+**Save** → **Redeploy**. Biến môi trường được ưu tiên hơn key nhập trong app.
 
 ## Giới hạn hiện tại & lộ trình
 

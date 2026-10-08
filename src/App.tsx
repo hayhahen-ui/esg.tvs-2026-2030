@@ -7,6 +7,7 @@ import { downloadXlsx } from "./xlsx";
 import { aggregateRecords, reportReadiness, periodContains } from "./esg";
 import EvidenceScreen from "./EvidenceScreen";
 import AiChat from "./AiChat";
+import ApiKeysScreen from "./ApiKeysScreen";
 
 const DEPT_OPTS = DEPARTMENTS.map((d) => ({ value: d, label: d }));
 const STATUS_DATA = [{ value: "measured", label: "Đo/ghi thực" }, { value: "estimated", label: "Ước tính" }, { value: "missing", label: "Thiếu" }, { value: "na", label: "Không áp dụng" }];
@@ -451,7 +452,7 @@ function AuditScreen() {
 
 const NAV = [
   ["home", "Tổng quan"], ["qa", "Hỏi đáp"], ["learn", "Học hỏi & tìm kiếm"], ["assess", "Đánh giá sẵn sàng"], ["roadmap", "Lộ trình & giao việc"],
-  ["topics", "Chủ đề trọng yếu"], ["evidence", "Sổ bằng chứng"], ["data", "Thu thập dữ liệu"], ["ghg", "Kiểm kê KNK"], ["reports", "Báo cáo"], ["capa", "CAPA & yêu cầu"], ["audit", "Nhật ký thay đổi"],
+  ["topics", "Chủ đề trọng yếu"], ["evidence", "Sổ bằng chứng"], ["data", "Thu thập dữ liệu"], ["ghg", "Kiểm kê KNK"], ["reports", "Báo cáo"], ["capa", "CAPA & yêu cầu"], ["audit", "Nhật ký thay đổi"], ["apikeys", "Cài đặt API"],
 ] as const;
 
 export default function App() {
@@ -491,6 +492,7 @@ export default function App() {
         {screen === "reports" && <ReportsScreen canWrite={canWrite} />}
         {screen === "capa" && <CapaScreen canWrite={canWrite} />}
         {screen === "audit" && <AuditScreen />}
+        {screen === "apikeys" && <ApiKeysScreen />}
       </main>
     </div>
   );

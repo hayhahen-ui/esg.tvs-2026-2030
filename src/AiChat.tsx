@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ARTICLES, QUICK_QUESTIONS } from "./content";
 import { AI_DISCLAIMER, AI_GENERATED_DISCLAIMER, DEFAULT_AI_MODEL, type ChatModel, type WebResult } from "./ai";
+import { apiKeyStore } from "./apiKeys";
 
 interface ArticleLike { id: string; title: string; summary: string; content: string; category: string; source: string }
 interface ChatMsg {
@@ -33,16 +34,21 @@ export default function AiChat({ knowledge }: {
   const [models, setModels] = useState<ChatModel[]>([]);
   const [aiReady, setAiReady] = useState(false);
   const [model, setModel] = useState<string>(DEFAULT_AI_MODEL);
+  const [localKeys, setLocalKeys] = useState(() => apiKeyStore.load());
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const stored = apiKeyStore.load();
+    setLocalKeys(stored);
     fetch("/api/ai-chat").then((r) => r.json()).then((d: { configured?: boolean; models?: ChatModel[]; defaultModel?: string }) => {
-      if (d.configured) {
+      if (d.configured || stored.explabs) {
         setAiReady(true);
         if (Array.isArray(d.models) && d.models.length) setModels(d.models);
         if (d.defaultModel) setModel(d.defaultModel);
       }
-    }).catch(() => { /* AI không bắt buộc */ });
+    }).catch(() => {
+      if (stored.explabs) setAiReady(true);
+    });
   }, []);
 
   const scrollDown = () => setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }), 50);
@@ -88,13 +94,13 @@ export default function AiChat({ knowledge }: {
       const r = await fetch("/api/qa-search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ query, apiKey: localKeys.tinyfish || undefined }),
       });
       const data = await r.json().catch(() => ({})) as { results?: WebResult[] };
       if (r.status === 501) {
         setMsgs((m) => [...m, {
           id: nextId++, role: "bot", tag: "info",
-          text: "Chưa đấu nối tìm kiếm web. Quản trị viên cần thêm biến môi trường TINYFISH_API_KEY trên Vercel (xem docs/CHATBOT_AI.md), sau đó deploy lại.",
+          text: "Chưa có key tìm kiếm web. Nhập key tại màn “Cài đặt API” (menu bên trái), hoặc quản trị viên thêm biến môi trường TINYFISH_API_KEY trên Vercel.",
         }]);
       } else if (!r.ok) {
         setMsgs((m) => [...m, { id: nextId++, role: "bot", tag: "info", text: "Tìm kiếm web tạm thời lỗi, bạn thử lại sau ít phút." }]);
@@ -124,13 +130,13 @@ export default function AiChat({ knowledge }: {
       const r = await fetch("/api/ai-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question, model, context: msg.aiContext ?? "" }),
+        body: JSON.stringify({ question, model, context: msg.aiContext ?? "", apiKey: localKeys.explabs || undefined }),
       });
       const data = await r.json().catch(() => ({})) as { reply?: string; message?: string };
       if (r.status === 501) {
         setMsgs((m) => [...m, {
           id: nextId++, role: "bot", tag: "info",
-          text: "Chưa đấu nối AI. Quản trị viên cần thêm biến môi trường EXPLABS_API_KEY trên Vercel (xem docs/CHATBOT_AI.md), sau đó deploy lại.",
+          text: "Chưa có key AI. Nhập key tại màn “Cài đặt API” (menu bên trái), hoặc quản trị viên thêm biến môi trường EXPLABS_API_KEY trên Vercel.",
         }]);
       } else if (!r.ok || !data.reply) {
         setMsgs((m) => [...m, { id: nextId++, role: "bot", tag: "info", text: "AI tạm thời không trả lời được, bạn thử lại sau ít phút." }]);
