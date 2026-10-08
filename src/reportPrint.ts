@@ -76,10 +76,16 @@ export function buildEclatPrintHtml(lang: ReportLang, title: string, markdown: s
     .map((b) => `<p>${inlineHtml((b as { text: string }).text)}</p>`)
     .join("\n");
   const chapterHtml = rest.map((ch, i) => {
+    const isAppendix = /phụ lục|appendix|附录/i.test(ch.title);
+    const isFront = /về báo cáo này|about the report|关于本报告|thông điệp|message from|管理层致辞/i.test(ch.title);
     const m = /^(\d+)\.\s*(.*)$/.exec(ch.title);
     const num = m ? m[1] : String(i + 1);
     const name = m ? m[2] : ch.title;
-    const chapLabel = lang === "zh" ? `第 ${num} 章` : `CHAPTER ${num}`;
+    const chapLabel = isAppendix
+      ? (lang === "zh" ? "附录" : "APPENDIX")
+      : isFront
+        ? "ABOUT"
+        : lang === "zh" ? `第 ${num} 章` : `CHAPTER ${num}`;
     return `<section class="chapter" id="chap-${i}"><div class="chap-kicker">${chapLabel}</div><h2>${escapeHtml(name)}</h2>${renderBlocks(ch.blocks)}</section>`;
   }).join("\n");
 

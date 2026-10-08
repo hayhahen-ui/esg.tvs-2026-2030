@@ -105,7 +105,8 @@ export function buildExampleReport(lang: ReportLang = "vi"): string {
   const f = (value: number, digits = 2) => new Intl.NumberFormat(locale, { maximumFractionDigits: digits }).format(value);
   const changeL = (a: number, b: number) => `${f((b / a - 1) * 100)}%`;
   const tableL = (headers: string[], rows: (string | number)[][]) => table(headers, rows);
-  const H = (key: string) => `## ${rp(lang, key)}`;
+  const H2 = (key: string) => `## ${rp(lang, key)}`;
+  const H3 = (key: string) => `### ${rp(lang, key)}`;
   const crow = (key: string, vars: Record<string, string | number> = {}) => fill(rp(lang, key), vars).split("|");
   const warn = t(lang, "sampleNote");
 
@@ -115,23 +116,38 @@ export function buildExampleReport(lang: ReportLang = "vi"): string {
     f(row[3]), f(row[4]), AGG_I18N[row[5]]?.[lang] ?? row[5], row[6],
   ]);
 
+  const profileRows = [1, 2, 3, 4, 5, 6, 7, 8].map((n) =>
+    fill(rp(lang, `rpt_11_prow${n}`), { emp: f(current.employees, 0), pairs: f(current.pairs, 0) }).split("|"));
+
   return `# ${rp(lang, "ex_title")}
 
 **${warn}** ${rp(lang, "ex_intro")}
 
-${H("ex_01_h")}
+${H2("rpt_about_h")}
 
-${rp(lang, "ex_01_p1")}
+${rp(lang, "rpt_about_welcome")}
 
-${rp(lang, "ex_01_p2")}
+${rp(lang, "rpt_about_cycle")}
+
+${rp(lang, "rpt_about_boundary")}
+
+${rp(lang, "rpt_about_period")}
 
 ${rp(lang, "ex_01_p3")}
 
-${H("ex_02_h")}
+${rp(lang, "rpt_about_restate")}
+
+${rp(lang, "rpt_about_contact")}
+
+${H2("rpt_msg_h")}
 
 ${rp(lang, "ex_02_p1")}
 
 ${rp(lang, "ex_02_p2")}
+
+${H2("rpt_00_h")}
+
+${rp(lang, "rpt_00_intro")}
 
 ${tableL(cells("ex_02_th", lang), [
  [rp(lang, "ex_02_c1"), f(old.pairs, 0), f(current.pairs, 0), rp(lang, "ex_02_r1")],
@@ -142,7 +158,11 @@ ${tableL(cells("ex_02_th", lang), [
  [rp(lang, "ex_02_c6"), "60%", "80%", rp(lang, "ex_02_r6")],
 ])}
 
-${H("ex_03_h")}
+${H2("rpt_1_h")}
+
+${H3("rpt_11_h")}
+
+${tableL(cells("rpt_11_profile_th", lang), profileRows)}
 
 ${fill(rp(lang, "ex_03_p1"), { pairs: f(current.pairs, 0), emp: f(current.employees, 0) })}
 
@@ -150,27 +170,31 @@ ${rp(lang, "ex_03_p2")}
 
 ${fill(rp(lang, "ex_03_p3"), { mat: f(current.materialsT, 0), rmat: f(current.recycledMaterialsT, 0), rpct: f(metrics.recycledMaterialsPct, 0) })}
 
-${H("ex_04_h")}
+${rp(lang, "rpt_11_history").split(" | ").map((x) => `- ${x}`).join("\n")}
 
-${rp(lang, "ex_04_p1")}
+${H3("rpt_12_h")}
 
-${rp(lang, "ex_04_p2")}
+${rp(lang, "rpt_12_strategy")}
 
-${rp(lang, "ex_04_p3")}
+${rp(lang, "ex_07_p1")}
 
-${tableL(cells("ex_04_th", lang), ["ex_04_r1", "ex_04_r2", "ex_04_r3", "ex_04_r4", "ex_04_r5", "ex_04_r6"].map((k) => crow(k)))}
+${rp(lang, "ex_08_p2")}
 
-${rp(lang, "ex_04_p4")}
+${rp(lang, "ex_08_p1")}
 
-${H("ex_05_h")}
+${H3("rpt_13_h")}
 
-${rp(lang, "ex_05_p1")}
+${rp(lang, "ex_14_p1")}
 
-${rp(lang, "ex_05_p2")}
+${rp(lang, "ex_14_p2")}
 
-${rp(lang, "ex_05_p3")}
+${rp(lang, "ex_07_p2")}
 
-${H("ex_06_h")}
+${rp(lang, "ex_07_p3")}
+
+${rp(lang, "ex_14_p3")}
+
+${H3("rpt_14_h")}
 
 ${rp(lang, "ex_06_p1")}
 
@@ -180,31 +204,66 @@ ${tableL(cells("ex_06_th", lang), [1, 2, 3, 4, 5, 6, 7].map((n) => [
 
 ${rp(lang, "ex_06_p2")}
 
-${H("ex_07_h")}
+${H3("rpt_15_h")}
 
-${rp(lang, "ex_07_p1")}
+${rp(lang, "ex_05_p1")}
 
-${rp(lang, "ex_07_p2")}
+${rp(lang, "ex_05_p2")}
 
-${rp(lang, "ex_07_p3")}
+${rp(lang, "ex_05_p3")}
 
-${H("ex_08_h")}
+${H2("rpt_2_h")}
 
-${rp(lang, "ex_08_p1")}
+${H3("rpt_21_h")}
 
-${rp(lang, "ex_08_p2")}
-
-${tableL(cells("ex_08_th", lang), [
- crow("ex_08_r1", { v: f(metrics.electricityPerPair) }),
- crow("ex_08_r2", { v: f(metrics.waterLitresPerPair) }),
- crow("ex_08_r3", { b: f(previous.recoveryPct) }),
- crow("ex_08_r4"),
- crow("ex_08_r5"),
+${tableL(cells("ex_11_th", lang), [
+ crow("ex_11_r1"), crow("ex_11_r2"), crow("ex_11_r3"), crow("ex_11_r4"),
+ crow("ex_11_r5"), crow("ex_11_r6"),
+ crow("ex_11_r7", { a: f(old.trainingHours, 0), b: f(current.trainingHours, 0) }),
+ crow("ex_11_r8"),
 ])}
 
-${rp(lang, "ex_08_p3")}
+${H3("rpt_22_h")}
 
-${H("ex_09_h")}
+${rp(lang, "rpt_22_text")}
+
+${rp(lang, "ex_11_p1")}
+
+${H3("rpt_23_h")}
+
+${rp(lang, "ex_12_p1")}
+
+${rp(lang, "ex_12_p2")}
+
+${rp(lang, "ex_12_p3")}
+
+${H3("rpt_24_h")}
+
+${rp(lang, "ex_11_p2")}
+
+${H2("rpt_3_h")}
+
+${H3("rpt_31_h")}
+
+${rp(lang, "rpt_31_text")}
+
+${H3("rpt_32_h")}
+
+${rp(lang, "ex_13_p1")}
+
+${rp(lang, "ex_13_p2")}
+
+${H3("rpt_33_h")}
+
+${rp(lang, "rpt_33_text")}
+
+${H2("rpt_4_h")}
+
+${H3("rpt_41_h")}
+
+${rp(lang, "rpt_41_text")}
+
+${H3("rpt_42_h")}
 
 ${fill(rp(lang, "ex_09_p1"), { kwh: f(current.electricityKwh, 0), d: f(current.dieselLitres, 0), l: f(current.lpgKg, 0), gj: f(metrics.energyGJ), gj24: f(previous.energyGJ) })}
 
@@ -225,7 +284,7 @@ ${tableL(cells("ex_09_s3th", lang), Array.from({ length: 15 }, (_, i) => crow(`e
 
 ${rp(lang, "ex_09_p4")}
 
-${H("ex_10_h")}
+${H3("rpt_43_h")}
 
 ${fill(rp(lang, "ex_10_p1"), { w: f(current.waterM3, 0), d: f(current.dischargeM3, 0), c: f(metrics.waterConsumedM3, 0) })}
 
@@ -242,44 +301,27 @@ ${rp(lang, "ex_10_p4")}
 
 ${rp(lang, "ex_10_p5")}
 
-${H("ex_11_h")}
+${H2("rpt_5_h")}
 
-${tableL(cells("ex_11_th", lang), [
- crow("ex_11_r1"), crow("ex_11_r2"), crow("ex_11_r3"), crow("ex_11_r4"),
- crow("ex_11_r5"), crow("ex_11_r6"),
- crow("ex_11_r7", { a: f(old.trainingHours, 0), b: f(current.trainingHours, 0) }),
- crow("ex_11_r8"),
+${H3("rpt_51_h")}
+
+${rp(lang, "rpt_51_intro")}
+
+${tableL(cells("ex_08_th", lang), [
+ crow("ex_08_r1", { v: f(metrics.electricityPerPair) }),
+ crow("ex_08_r2", { v: f(metrics.waterLitresPerPair) }),
+ crow("ex_08_r3", { b: f(previous.recoveryPct) }),
+ crow("ex_08_r4"),
+ crow("ex_08_r5"),
 ])}
 
-${rp(lang, "ex_11_p1")}
+${rp(lang, "ex_08_p3")}
 
-${rp(lang, "ex_11_p2")}
+${tableL(cells("ex_16_th", lang), [1, 2, 3, 4, 5].map((n) => crow(`ex_16_r${n}`)))}
 
-${H("ex_12_h")}
+${rp(lang, "ex_16_p1")}
 
-${rp(lang, "ex_12_p1")}
-
-${rp(lang, "ex_12_p2")}
-
-${rp(lang, "ex_12_p3")}
-
-${H("ex_13_h")}
-
-${rp(lang, "ex_13_p1")}
-
-${rp(lang, "ex_13_p2")}
-
-${rp(lang, "ex_13_p3")}
-
-${H("ex_14_h")}
-
-${rp(lang, "ex_14_p1")}
-
-${rp(lang, "ex_14_p2")}
-
-${rp(lang, "ex_14_p3")}
-
-${H("ex_15_h")}
+${H3("rpt_52_h")}
 
 ${rp(lang, "ex_15_p1")}
 
@@ -291,13 +333,15 @@ ${rp(lang, "ex_15_p3")}
 
 ${rp(lang, "ex_15_p4")}
 
-${H("ex_16_h")}
+${rp(lang, "ex_04_p2")}
 
-${tableL(cells("ex_16_th", lang), [1, 2, 3, 4, 5].map((n) => crow(`ex_16_r${n}`)))}
+${rp(lang, "ex_04_p3")}
 
-${rp(lang, "ex_16_p1")}
+${tableL(cells("ex_04_th", lang), ["ex_04_r1", "ex_04_r2", "ex_04_r3", "ex_04_r4", "ex_04_r5", "ex_04_r6"].map((k) => crow(k)))}
 
-${H("ex_17_h")}
+${rp(lang, "ex_04_p4")}
+
+${H2("rpt_pa_h")}
 
 **${warn}** ${rp(lang, "ex_17_p1")}
 
@@ -305,7 +349,7 @@ ${tableL(cells("ex_17_th", lang), kpiRows)}
 
 ${rp(lang, "ex_17_p2")}
 
-${H("ex_18_h")}
+${H2("rpt_pb_h")}
 
 ${tableL(cells("ex_18_th", lang), sampleMonths.map((row) => [row.period, f(row.pairs, 0), f(row.electricityKwh, 0), f(row.dieselLitres, 0), f(row.lpgKg, 0), f(row.waterM3, 0), f(row.dischargeM3, 0)]))}
 
@@ -315,7 +359,7 @@ ${tableL(cells("ex_18_eth", lang), Array.from({ length: 12 }, (_, i) => crow(`ex
 
 ${rp(lang, "ex_18_p2")}
 
-${H("ex_19_h")}
+${H2("rpt_pc_h")}
 
 ${rp(lang, "ex_19_p1")}
 
@@ -323,7 +367,7 @@ ${tableL(cells("ex_19_th", lang), Array.from({ length: 18 }, (_, i) => crow(`ex_
 
 ${rp(lang, "ex_19_p2")}
 
-${H("ex_20_h")}
+${H2("rpt_pd_h")}
 
 1. ${rp(lang, "ex_20_l1")}
 2. ${rp(lang, "ex_20_l2")}

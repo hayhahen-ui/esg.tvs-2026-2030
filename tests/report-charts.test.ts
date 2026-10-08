@@ -58,10 +58,10 @@ describe("reportProse", () => {
 
 describe("buildExampleReport đa ngôn ngữ", () => {
   const langs: ReportLang[] = ["vi", "en", "zh"];
-  it("3 bản đều đủ 20 chương, không sót placeholder/key", () => {
+  it("3 bản đều đủ 12 chương Eclat, không sót placeholder/key", () => {
     for (const lang of langs) {
       const md = buildExampleReport(lang);
-      expect(md.split("\n## ").length - 1, lang).toBe(20);
+      expect(md.split("\n## ").length - 1, lang).toBe(12);
       expect(md, lang).not.toMatch(/\{[a-z]+\}/);
       expect(md, lang).not.toContain("ex_");
       expect(md, lang).toContain("SUP-COVER");
@@ -103,12 +103,12 @@ describe("buildEclatPrintHtml", () => {
       const html = buildEclatPrintHtml(lang, "Test", buildExampleReport(lang));
       expect(html).toContain("@page");
       expect(html).toContain("chap-0");
-      expect(html).toContain("chap-19");
+      expect(html).toContain("chap-11");
       expect(html).toContain("<table>");
     }
     const zh = buildEclatPrintHtml("zh", "T", buildExampleReport("zh"));
-    expect(zh).toContain("第 01 章");
+    expect(zh).toContain("第 1 章");
     const en = buildEclatPrintHtml("en", "T", buildExampleReport("en"));
-    expect(en).toContain("CHAPTER 01");
+    expect(en).toContain("CHAPTER 1");
   });
 });

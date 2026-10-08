@@ -2,19 +2,31 @@
 
 **MẪU GIẢ ĐỊNH — không phải dữ liệu, chữ ký hoặc chứng nhận của doanh nghiệp thật.** Tất cả số liệu, chính sách, khảo sát, tình huống, bằng chứng và quyết định dưới đây được tạo để hướng dẫn biên soạn. Không sao chép thành báo cáo thực tế. Không nhập phụ lục mẫu vào kho dữ liệu thật. Bản 1.0, biên soạn ngày 08/10/2026.
 
-## 01. Hồ sơ báo cáo và quản lý phiên bản
+## Về báo cáo này
 
-Công ty Giày Minh Họa là pháp nhân hư cấu sản xuất giày tại một nhà máy CS01 trong một khu công nghiệp giả định ở Việt Nam. Không có mã số doanh nghiệp, địa chỉ hoặc chữ ký thật. Kỳ minh họa: 01/01/2025–31/12/2025; năm cơ sở 2024; tần suất hằng năm; đơn vị tiền tệ tỷ đồng nếu không ghi khác. Mọi dẫn chiếu chương là vị trí nội dung, không phải xác nhận đáp ứng tiêu chuẩn.
+Mời bạn đọc Báo cáo ESG của Công ty Giày Minh Họa (gọi tắt là “Minh Họa”). Kể từ khi thành lập (giả định), Minh Họa gắn bó với nghề làm giày và cùng người lao động, đối tác, các bên liên quan tạo ra sản phẩm thân thiện hơn, với tầm nhìn “Phát triển bền vững qua từng đôi giày”. Báo cáo này trình bày chiến lược, quản trị và kết quả phát triển bền vững của Minh Họa trong kịch bản giả định, đồng thời phản hồi các vấn đề mà bên liên quan quan tâm.
 
-Mã báo cáo DEMO-ESG-2025-v1.0. Trạng thái: tài liệu đào tạo, không có phê duyệt thật. Vai trò dự kiến: Ban ESG lập, kiểm soát nội bộ soát xét, giám đốc phê duyệt. Khi áp dụng, thay bằng tài khoản, ngày, biên bản và phiên bản dữ liệu thực. Đầu mối phản hồi trong mẫu là vai trò Thư ký Ban ESG, không có email thật.
+Kỳ phát hành: bản mẫu đào tạo 1.0, biên soạn ngày 08/10/2026. Khi áp dụng thực tế, doanh nghiệp nên phát hành báo cáo ESG định kỳ hằng năm (khuyến nghị cùng kỳ với báo cáo tài chính) và công bố trên website chính thức.
+
+Phạm vi báo cáo: toàn bộ hoạt động trong ranh giới kiểm soát vận hành của nhà máy CS01 trong kịch bản (không có công ty con). Khi áp dụng thực tế, phạm vi báo cáo nên nhất quán với các đơn vị hợp nhất trong báo cáo tài chính hợp nhất, và mọi khác biệt về phạm vi công bố của chủ đề trọng yếu cần được giải thích trong báo cáo.
+
+Kỳ báo cáo: năm tài chính 2025 (01/01/2025–31/12/2025), nhất quán với kỳ báo cáo tài chính; năm cơ sở 2024. Đơn vị tiền tệ là tỷ đồng Việt Nam trừ khi ghi khác; các chỉ số môi trường và xã hội dùng đơn vị thông dụng và được ghi chú trong bài.
 
 Mẫu tham khảo cấu trúc GRI và cách kiểm kê của GHG Protocol, không tuyên bố “in accordance with GRI”. Không có assurance độc lập, chứng nhận, kiểm toán báo cáo tài chính hay xác nhận pháp lý. Mẫu này không lấy số liệu của Eclat; bản tham chiếu Eclat 2024 ở cùng màn hình được biên soạn riêng từ nguồn có số trang.
 
-## 02. Thông điệp lãnh đạo và tổng quan kết quả
+Điều chỉnh số liệu nền: không có trong kịch bản này (dữ liệu 2024 được tạo theo cùng phương pháp). Khi áp dụng thực tế, mọi điều chỉnh hồi tố phải được nêu rõ lý do và ảnh hưởng.
+
+Liên hệ: Ban ESG — Công ty Giày Minh Họa (giả định). Đầu mối phản hồi trong mẫu là vai trò Thư ký Ban ESG, không có email thật.
+
+## Thông điệp của lãnh đạo
 
 Trong tình huống giả định năm 2025, ưu tiên của doanh nghiệp là giảm tài nguyên trên mỗi đôi giày, giảm nguy cơ chấn thương và tăng khả năng truy xuất nhà cung cấp. Sản lượng tăng 20%, trong khi điện mua giảm 16,67% và nước lấy giảm 10%. Đây là chênh lệch số liệu giả định, chưa phải kết quả đo lường tác động của riêng một dự án.
 
 Doanh nghiệp vẫn còn thiếu dữ liệu Scope 2 theo thị trường, phần lớn chuỗi giá trị Scope 3, một số chỉ tiêu nhân quyền và quản trị. Lãnh đạo trong kịch bản lựa chọn công khai khoảng trống và giao trách nhiệm bổ sung, thay vì biến dữ liệu chưa có thành số 0. Không có tuyên bố Net Zero hay trung hòa carbon.
+
+## 0. Tổng quan phát triển bền vững
+
+Tổng quan các chỉ số nổi bật năm 2025 so với năm cơ sở 2024 — như “điểm nhấn tài chính” của báo cáo thường niên, nhưng cho phát triển bền vững. Chi tiết phương pháp và bằng chứng ở các chương chuyên đề.
 
 | Chỉ tiêu | 2024 | 2025 | Nhận xét |
 | --- | --- | --- | --- |
@@ -25,7 +37,20 @@ Doanh nghiệp vẫn còn thiếu dữ liệu Scope 2 theo thị trường, ph�
 | Tỷ suất chấn thương (ca/triệu giờ) | 2,27 | 1,25 | 3 ca / 2,4 triệu giờ trong năm 2025 |
 | Nhà cung cấp được đánh giá | 60% | 80% | Chưa phủ 20 nhà cung cấp |
 
-## 03. Doanh nghiệp, cơ sở và chuỗi giá trị
+## 1. Nền tảng phát triển bền vững
+
+### 1.1 Hồ sơ doanh nghiệp
+
+| Chỉ tiêu | Nội dung (giả định) |
+| --- | --- |
+| Tên doanh nghiệp (giả định) | Công ty Giày Minh Họa |
+| Năm thành lập (giả định) | 2012 |
+| Trụ sở (giả định) | Khu công nghiệp giả định, Việt Nam |
+| Ngành nghề | Sản xuất giày — cắt, may, dán, hoàn thiện |
+| Nhân viên tại 31/12/2025 | 1.200 (+ 40 lao động nhà thầu) |
+| Sản lượng 2025 | 2.400.000 đôi thành phẩm |
+| Doanh thu 2025 (giả định) | 960 tỷ đồng |
+| Cơ sở | 01 nhà máy CS01; không có công ty con |
 
 Nhà máy CS01 cắt, may, dán và hoàn thiện giày. Sản lượng 2025 là 2.400.000 đôi thành phẩm đạt chuẩn, không tính bán thành phẩm hay đôi bị loại. Có 1.200 nhân viên tại 31/12/2025 và 40 lao động dịch vụ nhà thầu; hai nhóm được báo cáo tách biệt. Không có công ty con hoặc cơ sở khác trong tình huống.
 
@@ -33,34 +58,36 @@ Chuỗi giá trị gồm nhà cung cấp vải/cao su/keo/bao bì → nhà máy 
 
 Vật liệu đầu vào 2025 là 6.000 tấn, trong đó 1.440 tấn có hàm lượng tái chế theo giả định xác nhận vật liệu. Tỷ lệ theo khối lượng là 24%, so với 20% năm 2024. Chỉ tiêu này không chứng minh 24% mỗi sản phẩm được tái chế; chưa có phân bổ cấp mã hàng hoặc hồ sơ nguồn gốc thật.
 
-## 04. Phương pháp, ranh giới và chất lượng dữ liệu
+- 2012 — Thành lập (giả định), khởi đầu từ gia công giày.
+- 2015 — Vượt mốc 1 triệu đôi/năm (giả định).
+- 2018 — Áp dụng ISO 14001 cho hệ thống quản lý môi trường (giả định).
+- 2021 — Thành lập Ban ESG (giả định).
+- 2024 — Năm cơ sở cho báo cáo ESG đầu tiên.
+- 2025 — Phát hành báo cáo ESG đầu tiên (chính là bản mẫu đào tạo này).
 
-Ranh giới tổ chức dùng cách tiếp cận kiểm soát vận hành cho CS01. Mọi bảng so sánh nhà máy dùng cùng kỳ, phạm vi và năm cơ sở. Dữ liệu 2024 được tạo theo cùng phương pháp; không có điều chỉnh số liệu nền trong kịch bản. Khi áp dụng thực tế cần chính sách tính lại năm cơ sở và công bố điều chỉnh theo mức độ ảnh hưởng.
+### 1.2 Chiến lược bền vững và quản trị rủi ro
 
-Điện, nhiên liệu, nước, sản lượng là bộ dữ liệu tháng giả định đủ 12/12 tháng. Nhân viên là số cuối kỳ, không cộng 12 tháng. Cường độ dùng tổng tử chia tổng mẫu. Tổng chất thải có phân loại; nước tiêu thụ là ước tính từ cân bằng. Mỗi mã DEMO chỉ minh họa tài liệu cần thu, không có tệp bằng chứng thật.
+Chiến lược bền vững của Minh Họa trong kịch bản gắn với chiến lược kinh doanh: giảm tài nguyên trên mỗi đôi giày, bảo đảm an toàn cho người lao động và truy xuất được chuỗi cung ứng. Ba trụ cột — Con người, Chuỗi giá trị, Môi trường — được lồng vào vận hành hằng ngày thay vì đứng ngoài sản xuất. Ban ESG 7 vai trò (lãnh đạo, EHS, nhân sự, mua hàng, sản xuất, tài chính, kiểm soát nội bộ) họp mỗi quý, báo cáo tiến độ cho giám đốc và điều chỉnh mục tiêu theo kết quả.
 
-Các hệ số sau hoàn toàn giả định, không gắn với lưới điện Việt Nam hoặc bộ hệ số chính thức. Trong dữ liệu thật phải xác lập địa lý, năm, công nghệ, khí bao gồm, GWP và nguồn phiên bản.
+Cơ cấu hư cấu gồm giám đốc điều hành và Ban ESG 7 vai trò: lãnh đạo, EHS, nhân sự, mua hàng, sản xuất, tài chính và kiểm soát nội bộ. Ban họp mỗi quý, chủ dữ liệu kiểm tra tháng, kiểm soát nội bộ soát xét độc lập, giám đốc duyệt báo cáo. Chưa công bố danh tính, giới, tính độc lập, cơ chế đề cử, đánh giá hiệu quả hoặc thù lao của cơ quan quản trị; không coi mô tả này đáp ứng toàn bộ GRI 2.
 
-| Nguồn | Hệ số giả định | Đơn vị | Công thức |
-| --- | --- | --- | --- |
-| Điện mua | 0,5 | kgCO2e/kWh | kWh × hệ số / 1.000 → tCO2e |
-| Diesel | 2,68 | kgCO2e/lít | Lít × hệ số / 1.000 |
-| LPG | 3 | kgCO2e/kg | kg × hệ số / 1.000 |
-| Diesel — nhiệt trị | 0,036 | GJ/lít | Lít × nhiệt trị |
-| LPG — nhiệt trị | 0,046 | GJ/kg | kg × nhiệt trị |
-| Điện — quy đổi | 0,0036 | GJ/kWh | kWh × 0,0036 |
+Rủi ro ưu tiên: tăng giá điện, nắng nóng ảnh hưởng người lao động, gián đoạn nước và thiếu thông tin nguyên liệu. Tình huống dùng biện pháp tối ưu thiết bị, quản lý nhiệt, theo dõi nước, đa nguồn cung và lấy dữ liệu nhà cung cấp; chưa có mô hình kịch bản khí hậu hay định lượng rủi ro tài chính.
 
-Giá trị không được làm tròn từng dòng trước khi tổng hợp. Số trên bảng hiển thị tối đa hai chữ số thập phân; Excel giữ số gốc để tính lại. Thiếu, không áp dụng và số 0 là các trạng thái khác nhau.
+Sổ nghĩa vụ minh họa gồm quản lý môi trường, lao động, an toàn, hóa chất và yêu cầu nhãn hàng. Không có tên văn bản, giấy phép hay kết luận pháp lý thật. Pháp chế phải xác định văn bản đang hiệu lực, căn cứ áp dụng, hạn và bằng chứng trước khi công bố tuân thủ. Không có đủ cơ sở để tuyên bố “không vi phạm pháp luật”. Chưa giả định tư cách thành viên hiệp hội.
 
-## 05. Tham vấn bên liên quan
+### 1.3 Hiệu quả kinh doanh và quản trị liêm chính
 
-Kịch bản giả định gồm khảo sát 240 nhân viên ở các ca, 10 khách hàng, 20 nhà cung cấp và một cuộc họp cộng đồng với 15 đại diện. Các con số này minh họa quy mô tham vấn, không phải khảo sát đã thực hiện. Tỷ lệ đại diện nhân viên khảo sát là 20% nhân viên cuối kỳ, chưa chứng minh mẫu ngẫu nhiên hay đại diện thống kê.
+Giá trị kinh tế trực tiếp tạo ra giả định là 960 tỷ đồng. Phân phối 905 tỷ gồm chi phí vận hành 650, lương/phúc lợi 180, chi trả bên cung cấp vốn 40, nộp chính phủ 34 và cộng đồng 1. Giá trị giữ lại 55 tỷ đồng: 960 − 905. Đây là mô hình đơn giản, không phải lợi nhuận kế toán hoặc báo cáo tài chính đã kiểm toán; các khoản không được cộng lại vào chi phí vận hành.
 
-Nhân viên ưu tiên an toàn, nhiệt tại xưởng và tính minh bạch giờ làm; khách hàng ưu tiên hóa chất, truy xuất và phát thải; cộng đồng ưu tiên nước thải. Ban ESG trong kịch bản ghi nhận nội dung, phản hồi bằng kế hoạch và rà lại hằng quý. Nhóm lao động nhà thầu và người ở ca đêm chưa được tham vấn đầy đủ, được đưa vào kế hoạch 2026.
+Đối chiếu năm 2024: tạo ra 800, phân phối 756, giữ lại 44 tỷ. Phân phối gồm vận hành 550, nhân viên 145, vốn 32, chính phủ 28 và cộng đồng 1. Nguồn DEMO-FIN phải được thay bằng sổ cái và quy tắc phân loại thực. Chưa có dữ liệu về hỗ trợ chính phủ hoặc chính sách/chiến lược thuế.
 
-Kênh phản ánh gồm hộp thư nội bộ, đại diện người lao động và đầu mối nhân sự. Chính sách giả định yêu cầu bảo mật, không trả đũa, phản hồi ban đầu trong 5 ngày làm việc và theo dõi kết quả. Không công khai thông tin người phản ánh trong báo cáo.
+Chính sách giả định có chống hối lộ, khai báo lợi ích, an toàn, nhân quyền, bảo vệ dữ liệu và cơ chế phản ánh. Trong kịch bản, 12 phản ánh lao động được tiếp nhận, 10 xử lý xong và 2 còn mở liên quan giờ làm. “Đã xử lý” chỉ có nghĩa hồ sơ có phản hồi và hành động, chưa thay thế đánh giá mức hài lòng hay hiệu lực dài hạn.
 
-## 06. Chủ đề trọng yếu và cách quản lý
+Có 0 vụ hối lộ được xác nhận trong sổ tình huống, nhưng phạm vi tra soát chỉ là các hồ sơ tiếp nhận và đánh giá của Ban ESG. Không suy ra doanh nghiệp hoàn toàn không có hối lộ. 100% cán bộ mua hàng trong nhóm giả định 20 người hoàn thành đào tạo chống hối lộ; chưa có dữ liệu về tổng nhân viên hoặc nhà cung cấp được truyền đạt chính sách.
+
+Nguồn lực ESG 2025 trong tình huống: đầu tư thiết bị 2 tỷ và chi phí đào tạo/đánh giá 0,5 tỷ. Khoản đầu tư vốn và chi phí vận hành khác nhau, không cộng lại vào bảng phân phối nếu đã nằm trong các khoản tương ứng. Chưa tính thời gian hoàn vốn hoặc tiết kiệm tiền xác minh.
+
+### 1.4 Xác định chủ đề trọng yếu
 
 Thang ưu tiên nội bộ 1–5 xét mức nghiêm trọng, phạm vi, khả năng khắc phục và khả năng xảy ra đối với tác động tiềm tàng. Nhóm ESG dùng hồ sơ vận hành và ý kiến tham vấn, sau đó lãnh đạo phê duyệt danh sách trong tình huống. Không áp dụng một phép cộng điểm như điều kiện bắt buộc của GRI; tác động nhân quyền nghiêm trọng được ưu tiên ngay cả khi khó đo.
 
@@ -76,31 +103,70 @@ Thang ưu tiên nội bộ 1–5 xét mức nghiêm trọng, phạm vi, khả n�
 
 Các chủ đề trên liên kết mục tiêu chương 08, kết quả chương 09–14 và CAPA chương 16. Rà soát hiệu lực bằng KPI và phản hồi, không chỉ đếm số chính sách được ban hành. Đa dạng sinh học và cuối vòng đời sản phẩm đang sàng lọc; thiếu dữ liệu không có nghĩa là không trọng yếu.
 
-## 07. Quản trị, đạo đức và trách nhiệm ESG
+### 1.5 Gắn kết bên liên quan
 
-Cơ cấu hư cấu gồm giám đốc điều hành và Ban ESG 7 vai trò: lãnh đạo, EHS, nhân sự, mua hàng, sản xuất, tài chính và kiểm soát nội bộ. Ban họp mỗi quý, chủ dữ liệu kiểm tra tháng, kiểm soát nội bộ soát xét độc lập, giám đốc duyệt báo cáo. Chưa công bố danh tính, giới, tính độc lập, cơ chế đề cử, đánh giá hiệu quả hoặc thù lao của cơ quan quản trị; không coi mô tả này đáp ứng toàn bộ GRI 2.
+Kịch bản giả định gồm khảo sát 240 nhân viên ở các ca, 10 khách hàng, 20 nhà cung cấp và một cuộc họp cộng đồng với 15 đại diện. Các con số này minh họa quy mô tham vấn, không phải khảo sát đã thực hiện. Tỷ lệ đại diện nhân viên khảo sát là 20% nhân viên cuối kỳ, chưa chứng minh mẫu ngẫu nhiên hay đại diện thống kê.
 
-Chính sách giả định có chống hối lộ, khai báo lợi ích, an toàn, nhân quyền, bảo vệ dữ liệu và cơ chế phản ánh. Trong kịch bản, 12 phản ánh lao động được tiếp nhận, 10 xử lý xong và 2 còn mở liên quan giờ làm. “Đã xử lý” chỉ có nghĩa hồ sơ có phản hồi và hành động, chưa thay thế đánh giá mức hài lòng hay hiệu lực dài hạn.
+Nhân viên ưu tiên an toàn, nhiệt tại xưởng và tính minh bạch giờ làm; khách hàng ưu tiên hóa chất, truy xuất và phát thải; cộng đồng ưu tiên nước thải. Ban ESG trong kịch bản ghi nhận nội dung, phản hồi bằng kế hoạch và rà lại hằng quý. Nhóm lao động nhà thầu và người ở ca đêm chưa được tham vấn đầy đủ, được đưa vào kế hoạch 2026.
 
-Có 0 vụ hối lộ được xác nhận trong sổ tình huống, nhưng phạm vi tra soát chỉ là các hồ sơ tiếp nhận và đánh giá của Ban ESG. Không suy ra doanh nghiệp hoàn toàn không có hối lộ. 100% cán bộ mua hàng trong nhóm giả định 20 người hoàn thành đào tạo chống hối lộ; chưa có dữ liệu về tổng nhân viên hoặc nhà cung cấp được truyền đạt chính sách.
+Kênh phản ánh gồm hộp thư nội bộ, đại diện người lao động và đầu mối nhân sự. Chính sách giả định yêu cầu bảo mật, không trả đũa, phản hồi ban đầu trong 5 ngày làm việc và theo dõi kết quả. Không công khai thông tin người phản ánh trong báo cáo.
 
-## 08. Nghĩa vụ, rủi ro và mục tiêu
+## 2. Con người — nền tảng phát triển
 
-Sổ nghĩa vụ minh họa gồm quản lý môi trường, lao động, an toàn, hóa chất và yêu cầu nhãn hàng. Không có tên văn bản, giấy phép hay kết luận pháp lý thật. Pháp chế phải xác định văn bản đang hiệu lực, căn cứ áp dụng, hạn và bằng chứng trước khi công bố tuân thủ. Không có đủ cơ sở để tuyên bố “không vi phạm pháp luật”. Chưa giả định tư cách thành viên hiệp hội.
+### 2.1 Quản trị nguồn nhân lực
 
-Rủi ro ưu tiên: tăng giá điện, nắng nóng ảnh hưởng người lao động, gián đoạn nước và thiếu thông tin nguyên liệu. Tình huống dùng biện pháp tối ưu thiết bị, quản lý nhiệt, theo dõi nước, đa nguồn cung và lấy dữ liệu nhà cung cấp; chưa có mô hình kịch bản khí hậu hay định lượng rủi ro tài chính.
+| Nhân sự | 2024 | 2025 | Phạm vi / phương pháp |
+| --- | --- | --- | --- |
+| Nhân viên cuối kỳ | 1100 | 1200 | Headcount tại 31/12, không cộng theo tháng |
+| Nữ | 715 | 780 | 65% nhân viên cuối kỳ |
+| Nam | 385 | 420 | 35% nhân viên cuối kỳ |
+| Hợp đồng không xác định thời hạn | 880 | 960 | Phân loại giả định |
+| Hợp đồng xác định thời hạn | 220 | 240 | Cộng với nhóm trên khớp tổng |
+| Lao động nhà thầu cuối kỳ | 30 | 40 | Không nằm trong tổng nhân viên |
+| Giờ đào tạo | 22.000 | 28.800 | Tổng người tham gia × giờ; cùng phạm vi nhân viên |
+| Giờ đào tạo / người cuối kỳ | 20 | 24 | Không thay thế mẫu số bình quân nếu chọn phương pháp khác |
 
-| Mục tiêu nội bộ | Nền 2024 | Đích 2025 | Kết quả 2025 | Kết luận |
-| --- | --- | --- | --- | --- |
-| Điện kWh/đôi | 3,6 | ≤ 3,0 | 2,5 | Đạt trong dữ liệu giả định |
-| Nước lấy lít/đôi | 50 | ≤ 40 | 37,5 | Đạt |
-| Chất thải chuyển tái chế | 68,42% | ≥ 75% | 75% | Đạt, cần chứng từ xử lý thật |
-| Nhà cung cấp được đánh giá | 60% | ≥ 90% | 80% | Chưa đạt, thiếu 10 điểm phần trăm |
-| Số chấn thương ghi nhận | 5 | ≤ 2 | 3 | Chưa đạt, không che giấu ca |
+### 2.2 Đào tạo và phát triển nhân tài
 
-Các mục tiêu là quyết định minh họa, không được tổ chức thẩm định khí hậu. Không dùng mục tiêu cường độ để tuyên bố giảm tuyệt đối nếu tổng phát thải tăng.
+Năm 2025, tổng 28.800 giờ đào tạo được phân bổ đều 24 giờ/người cuối kỳ cho cả nam và nữ. Nội dung trong kịch bản gồm an toàn lao động, vận hành máy và kỹ năng quản lý ca. Chưa có phân tích hiệu quả đào tạo theo nhóm nghề, cũng như tỷ lệ đánh giá phát triển nghề nghiệp định kỳ — hai nội dung được đưa vào kế hoạch 2026.
 
-## 09. Môi trường — năng lượng và khí nhà kính
+Trong 2025, nữ được 18.720 giờ và nam 10.080 giờ đào tạo: tổng 28.800 giờ; mỗi nhóm 24 giờ/người cuối kỳ. Chưa phân tích theo nhóm nghề, hiệu quả đào tạo hoặc tỷ lệ đánh giá phát triển nghề nghiệp. Tuyển 220 người, nghỉ 120 người: 1.100 + 220 − 120 = 1.200, giả định không có chuyển cơ sở. Dùng nhân viên bình quân 1.150 làm mẫu số nội bộ, tỷ lệ nghỉ là 10,43%; chưa phân tách tuổi/vùng/giới nên không coi đáp ứng đầy đủ disclosure về nghỉ việc.
+
+### 2.3 Sức khỏe và an toàn lao động
+
+Kịch bản có 3 chấn thương ghi nhận của nhân viên trên 2.400.000 giờ làm; tỷ suất là 3 × 1.000.000 / 2.400.000 = 1,25 ca/triệu giờ. Năm 2024 có 5 ca/2.200.000 giờ = 2,27 ca/triệu giờ. Chuẩn hóa dùng một triệu giờ; không so trực tiếp với chỉ số dùng 200.000 giờ nếu chưa quy đổi.
+
+Giả định 0 ca tử vong và 0 chấn thương hậu quả nghiêm trọng trong sổ nhân viên; chưa có thống kê bệnh nghề nghiệp xác minh. Số tai nạn/giờ làm của nhà thầu chưa có, không được gộp với nhân viên hoặc báo bằng 0. Không tuyên bố an toàn cho toàn bộ lao động trong ranh giới nhà máy.
+
+Ba ca trong kịch bản: hai ca kẹp tay và một ca trượt ngã. EHS giả định điều tra, bổ sung che chắn máy, chỉnh lối đi và hướng dẫn ca; kiểm soát nội bộ kiểm hành động. Không đạt mục tiêu ≤ 2 ca; kiểm hiệu lực sau 90 ngày còn đang theo dõi. Hệ thống quản lý bao phủ nhân viên theo giả định nội bộ, chưa có đánh giá/chứng nhận độc lập hoặc bằng chứng đủ về mức bao phủ nhà thầu.
+
+### 2.4 Điều kiện lao động và nhân quyền
+
+Giả định toàn bộ 1.200 nhân viên nằm trong phạm vi thỏa ước lao động tập thể; báo cáo thực cần văn bản hiệu lực và kiểm phạm vi. Chưa có đánh giá lương đủ sống, chênh lệch lương theo giới, nghỉ thai sản/quay lại làm việc, làm thêm giờ hoặc sàng lọc đầy đủ lao động trẻ em/cưỡng bức. Việc thiếu các dữ liệu này được ghi vào kế hoạch, không thay bằng cam kết chung hoặc số 0.
+
+## 3. Chuỗi giá trị bền vững
+
+### 3.1 Sản phẩm và đổi mới
+
+Giày thành phẩm của Minh Họa trong kịch bản hướng tới độ bền và an toàn vật liệu. Năm 2025 ghi nhận 6 khiếu nại chất lượng sản phẩm: 5 đã xử lý, 1 đang chờ xác định nguyên nhân. Chưa có kiểm nghiệm an toàn sản phẩm đầy đủ, phân loại vi phạm nhãn hàng hoặc hồ sơ quyền riêng tư khách hàng để tuyên bố tuân thủ — báo cáo nêu rõ giới hạn này thay vì công bố tuân thủ chung chung.
+
+### 3.2 Chuỗi cung ứng bền vững
+
+80/100 nhà cung cấp hoạt động được đánh giá E/S, tăng từ 54/90 năm 2024. 10 nhà cung cấp mới đều được sàng lọc ban đầu, nhưng 100% nhóm mới khác với mức bao phủ 80% toàn bộ. Có 12 nhà cung cấp có phát hiện và 12 CAPA tương ứng trong mẫu: 8 đã kiểm hiệu lực/đóng, 4 đang xử lý. Không chấm dứt hợp đồng trong kịch bản; không chứng minh toàn chuỗi không có tác động tiêu cực.
+
+Mua địa phương được định nghĩa nội bộ là nhà cung cấp có cơ sở giao hàng trong cùng tỉnh giả định. Chi tiêu 120/600 tỷ đồng thuộc nhóm này, tương ứng 20%; chưa kiểm sở hữu hoặc nguồn nguyên liệu upstream. Định nghĩa phải giữ nhất quán khi so sánh.
+
+### 3.3 Cộng đồng và đồng hành xã hội
+
+Chương trình cộng đồng giả định trị giá 1 tỷ đồng hỗ trợ đào tạo nghề cho lao động địa phương. Kịch bản chưa có đánh giá kết quả dài hạn và chưa tham vấn đầy đủ nhóm dễ bị tổn thương. Đóng góp này được ghi nhận đúng bản chất thiện nguyện, không bù trừ các tác động môi trường hoặc lao động.
+
+## 4. Môi trường — gìn giữ tài nguyên
+
+### 4.1 Hệ thống quản lý môi trường
+
+Trong kịch bản, CS01 vận hành hệ thống quản lý môi trường theo ISO 14001 (giả định): chính sách môi trường, nhận diện khía cạnh môi trường, kiểm soát vận hành và ứng phó sự cố. Nước thải được xử lý trước khi xả; chất thải phân loại tại nguồn và chuyển đơn vị có chức năng. Báo cáo không tuyên bố nước thải “đạt chuẩn” khi chưa có kết quả quan trắc thật — mọi kết luận tuân thủ trong dữ liệu thật đều phải dựa trên kỳ quan trắc, thông số, vị trí lấy mẫu và căn cứ so sánh được đính kèm.
+
+### 4.2 Năng lượng và khí nhà kính
 
 Điện mua năm 2025 là 6.000.000 kWh, diesel 48.000 lít và LPG 36.000 kg. Không có năng lượng tự sản xuất hoặc bán trong kịch bản. Nguồn điện chưa có hồ sơ xác nhận tái tạo; không tuyên bố tỷ lệ điện tái tạo. Tổng năng lượng quy đổi là 24.984 GJ, so với 29.920 GJ năm 2024; chỉ phản ánh năng lượng trong CS01.
 
@@ -137,7 +203,7 @@ Sàng lọc Scope 3 dưới đây chỉ là minh họa. Ước tính vật liệ
 
 Không mua bù trừ, không trừ avoided emissions trong kịch bản. Tối ưu máy nén được giả định là một hành động, nhưng chưa có đo trước/sau hoặc phương pháp cô lập biến sản lượng; báo cáo không quy toàn bộ mức giảm cho dự án đó.
 
-## 10. Môi trường — nước, chất thải, hóa chất và thiên nhiên
+### 4.3 Nước, chất thải, hóa chất và thiên nhiên
 
 Nước lấy từ mạng cấp nước giả định là 90.000 m³; nước xả sau xử lý 72.000 m³. Nước tiêu thụ ước tính 18.000 m³ theo nước lấy trừ nước xả, với giả định không có thay đổi lưu trữ/chuyển giao khác. Không có nguồn nước ngầm/mặt trong kịch bản. Phân loại khu vực căng thẳng nước và thông tin nơi nhận chưa được xác minh; không kết luận nhà máy nằm ngoài vùng rủi ro.
 
@@ -156,48 +222,33 @@ Danh mục hóa chất giả định có 120 loại, 108 loại có SDS còn ph�
 
 Chưa có khảo sát đa dạng sinh học hoặc bản đồ khu vực nhạy cảm. Đưa vào kế hoạch sàng lọc tác động; không ghi “không áp dụng” chỉ từ giả định nhà máy ở khu công nghiệp.
 
-## 11. Xã hội — nhân viên và phát triển
+## 5. Hướng tới tương lai
 
-| Nhân sự | 2024 | 2025 | Phạm vi / phương pháp |
+### 5.1 Mục tiêu và kế hoạch 2026
+
+Mục tiêu nội bộ dưới đây là quyết định minh họa của kịch bản, chưa được tổ chức thẩm định khí hậu độc lập. Kế hoạch 2026 đi kèm nguồn lực và chủ trì giả định; mỗi CAPA cần người kiểm hiệu lực khác người thực hiện.
+
+| Mục tiêu nội bộ | Nền 2024 | Đích 2025 | Kết quả 2025 | Kết luận |
+| --- | --- | --- | --- | --- |
+| Điện kWh/đôi | 3,6 | ≤ 3,0 | 2,5 | Đạt trong dữ liệu giả định |
+| Nước lấy lít/đôi | 50 | ≤ 40 | 37,5 | Đạt |
+| Chất thải chuyển tái chế | 68,42% | ≥ 75% | 75% | Đạt, cần chứng từ xử lý thật |
+| Nhà cung cấp được đánh giá | 60% | ≥ 90% | 80% | Chưa đạt, thiếu 10 điểm phần trăm |
+| Số chấn thương ghi nhận | 5 | ≤ 2 | 3 | Chưa đạt, không che giấu ca |
+
+Các mục tiêu là quyết định minh họa, không được tổ chức thẩm định khí hậu. Không dùng mục tiêu cường độ để tuyên bố giảm tuyệt đối nếu tổng phát thải tăng.
+
+| Ưu tiên | Mục tiêu / nghiệm thu | Hành động / nguồn lực giả định | Chủ trì / hạn |
 | --- | --- | --- | --- |
-| Nhân viên cuối kỳ | 1100 | 1200 | Headcount tại 31/12, không cộng theo tháng |
-| Nữ | 715 | 780 | 65% nhân viên cuối kỳ |
-| Nam | 385 | 420 | 35% nhân viên cuối kỳ |
-| Hợp đồng không xác định thời hạn | 880 | 960 | Phân loại giả định |
-| Hợp đồng xác định thời hạn | 220 | 240 | Cộng với nhóm trên khớp tổng |
-| Lao động nhà thầu cuối kỳ | 30 | 40 | Không nằm trong tổng nhân viên |
-| Giờ đào tạo | 22.000 | 28.800 | Tổng người tham gia × giờ; cùng phạm vi nhân viên |
-| Giờ đào tạo / người cuối kỳ | 20 | 24 | Không thay thế mẫu số bình quân nếu chọn phương pháp khác |
+| Điện | ≤ 2,4 kWh/đôi với cùng phạm vi | Đo nhánh và điều khiển máy nén; 1,2 tỷ đầu tư | Cơ điện / 31/12/2026 |
+| Nước | ≤ 35 lít/đôi; xác lập stress nước | Phát hiện rò rỉ/đồng hồ; 0,3 tỷ đầu tư | EHS / 31/12/2026 |
+| An toàn | ≤ 2 ca; kiểm che chắn và hiệu lực 90 ngày | Nguyên nhân gốc 3 ca, kiểm tra độc lập; 0,2 tỷ chi phí | EHS / 30/06/2026 |
+| Nhà cung cấp | Đánh giá 100/100, xử lý 4 CAPA mở | Ưu tiên rủi ro, bằng chứng đóng; 0,2 tỷ chi phí | Mua hàng / 30/09/2026 |
+| Dữ liệu và báo cáo | Hệ số thật; kế hoạch 15 nhóm Scope 3; chỉ mục có trạng thái | Chủ dữ liệu, rà soát khung; 0,1 tỷ chi phí | Ban ESG / 30/09/2026 |
 
-Trong 2025, nữ được 18.720 giờ và nam 10.080 giờ đào tạo: tổng 28.800 giờ; mỗi nhóm 24 giờ/người cuối kỳ. Chưa phân tích theo nhóm nghề, hiệu quả đào tạo hoặc tỷ lệ đánh giá phát triển nghề nghiệp. Tuyển 220 người, nghỉ 120 người: 1.100 + 220 − 120 = 1.200, giả định không có chuyển cơ sở. Dùng nhân viên bình quân 1.150 làm mẫu số nội bộ, tỷ lệ nghỉ là 10,43%; chưa phân tách tuổi/vùng/giới nên không coi đáp ứng đầy đủ disclosure về nghỉ việc.
+Tổng ngân sách dự kiến 2 tỷ đồng, gồm 1,5 tỷ đầu tư và 0,5 tỷ chi phí, là kế hoạch giả định chưa được phê duyệt thật. Mỗi CAPA cần người kiểm hiệu lực khác người thực hiện, kết quả và nguồn. Chọn “đóng” trên web chỉ là ghi trạng thái; bằng chứng kiểm hiệu lực phải đính kèm để tổ chức nghiệm thu.
 
-Giả định toàn bộ 1.200 nhân viên nằm trong phạm vi thỏa ước lao động tập thể; báo cáo thực cần văn bản hiệu lực và kiểm phạm vi. Chưa có đánh giá lương đủ sống, chênh lệch lương theo giới, nghỉ thai sản/quay lại làm việc, làm thêm giờ hoặc sàng lọc đầy đủ lao động trẻ em/cưỡng bức. Việc thiếu các dữ liệu này được ghi vào kế hoạch, không thay bằng cam kết chung hoặc số 0.
-
-## 12. Xã hội — sức khỏe và an toàn
-
-Kịch bản có 3 chấn thương ghi nhận của nhân viên trên 2.400.000 giờ làm; tỷ suất là 3 × 1.000.000 / 2.400.000 = 1,25 ca/triệu giờ. Năm 2024 có 5 ca/2.200.000 giờ = 2,27 ca/triệu giờ. Chuẩn hóa dùng một triệu giờ; không so trực tiếp với chỉ số dùng 200.000 giờ nếu chưa quy đổi.
-
-Giả định 0 ca tử vong và 0 chấn thương hậu quả nghiêm trọng trong sổ nhân viên; chưa có thống kê bệnh nghề nghiệp xác minh. Số tai nạn/giờ làm của nhà thầu chưa có, không được gộp với nhân viên hoặc báo bằng 0. Không tuyên bố an toàn cho toàn bộ lao động trong ranh giới nhà máy.
-
-Ba ca trong kịch bản: hai ca kẹp tay và một ca trượt ngã. EHS giả định điều tra, bổ sung che chắn máy, chỉnh lối đi và hướng dẫn ca; kiểm soát nội bộ kiểm hành động. Không đạt mục tiêu ≤ 2 ca; kiểm hiệu lực sau 90 ngày còn đang theo dõi. Hệ thống quản lý bao phủ nhân viên theo giả định nội bộ, chưa có đánh giá/chứng nhận độc lập hoặc bằng chứng đủ về mức bao phủ nhà thầu.
-
-## 13. Chuỗi cung ứng, sản phẩm và cộng đồng
-
-80/100 nhà cung cấp hoạt động được đánh giá E/S, tăng từ 54/90 năm 2024. 10 nhà cung cấp mới đều được sàng lọc ban đầu, nhưng 100% nhóm mới khác với mức bao phủ 80% toàn bộ. Có 12 nhà cung cấp có phát hiện và 12 CAPA tương ứng trong mẫu: 8 đã kiểm hiệu lực/đóng, 4 đang xử lý. Không chấm dứt hợp đồng trong kịch bản; không chứng minh toàn chuỗi không có tác động tiêu cực.
-
-Mua địa phương được định nghĩa nội bộ là nhà cung cấp có cơ sở giao hàng trong cùng tỉnh giả định. Chi tiêu 120/600 tỷ đồng thuộc nhóm này, tương ứng 20%; chưa kiểm sở hữu hoặc nguồn nguyên liệu upstream. Định nghĩa phải giữ nhất quán khi so sánh.
-
-Kịch bản có 6 khiếu nại chất lượng sản phẩm, 5 đã xử lý và 1 chờ xác định nguyên nhân. Chưa có kiểm nghiệm an toàn sản phẩm đầy đủ, phân loại vi phạm nhãn hoặc hồ sơ quyền riêng tư để tuyên bố tuân thủ. Chương trình cộng đồng giả định trị giá 1 tỷ đồng hỗ trợ đào tạo nghề; thiếu đánh giá kết quả dài hạn và tham vấn nhóm dễ bị tổn thương. Đóng góp này không bù trừ tác động nước thải hoặc lao động.
-
-## 14. Giá trị kinh tế và nguồn lực ESG
-
-Giá trị kinh tế trực tiếp tạo ra giả định là 960 tỷ đồng. Phân phối 905 tỷ gồm chi phí vận hành 650, lương/phúc lợi 180, chi trả bên cung cấp vốn 40, nộp chính phủ 34 và cộng đồng 1. Giá trị giữ lại 55 tỷ đồng: 960 − 905. Đây là mô hình đơn giản, không phải lợi nhuận kế toán hoặc báo cáo tài chính đã kiểm toán; các khoản không được cộng lại vào chi phí vận hành.
-
-Đối chiếu năm 2024: tạo ra 800, phân phối 756, giữ lại 44 tỷ. Phân phối gồm vận hành 550, nhân viên 145, vốn 32, chính phủ 28 và cộng đồng 1. Nguồn DEMO-FIN phải được thay bằng sổ cái và quy tắc phân loại thực. Chưa có dữ liệu về hỗ trợ chính phủ hoặc chính sách/chiến lược thuế.
-
-Nguồn lực ESG 2025 trong tình huống: đầu tư thiết bị 2 tỷ và chi phí đào tạo/đánh giá 0,5 tỷ. Khoản đầu tư vốn và chi phí vận hành khác nhau, không cộng lại vào bảng phân phối nếu đã nằm trong các khoản tương ứng. Chưa tính thời gian hoàn vốn hoặc tiết kiệm tiền xác minh.
-
-## 15. Chất lượng, khoảng trống và soát xét
+### 5.2 Chất lượng dữ liệu, khoảng trống và cải tiến
 
 Bộ tháng minh họa bao phủ 12/12 tháng cho sản lượng, điện, nhiên liệu và nước; chỉ áp dụng CS01. Nhân sự và chất thải dùng tổng hợp giả định có đối chiếu phép tính. Không công bố tỷ lệ “100% dữ liệu được kiểm chứng” vì toàn bộ nguồn và phê duyệt là hư cấu. Số liệu tham chiếu được kiểm tra tính nhất quán toán học, không được kiểm chứng thực địa.
 
@@ -216,19 +267,22 @@ Không có assurance độc lập. Quy trình áp dụng thực tế: chủ dữ
 
 Khi sửa sau phát hành: giữ bản cũ, lập CAPA/lý do, mở kỳ, sửa có phiên bản, soát xét lại, phát hành báo cáo thay thế và giải thích ảnh hưởng. Không ghi đè kết quả bản đã duyệt bằng số liệu hiện tại.
 
-## 16. Kế hoạch 2026 và Kaizen
+Điện, nhiên liệu, nước, sản lượng là bộ dữ liệu tháng giả định đủ 12/12 tháng. Nhân viên là số cuối kỳ, không cộng 12 tháng. Cường độ dùng tổng tử chia tổng mẫu. Tổng chất thải có phân loại; nước tiêu thụ là ước tính từ cân bằng. Mỗi mã DEMO chỉ minh họa tài liệu cần thu, không có tệp bằng chứng thật.
 
-| Ưu tiên | Mục tiêu / nghiệm thu | Hành động / nguồn lực giả định | Chủ trì / hạn |
+Các hệ số sau hoàn toàn giả định, không gắn với lưới điện Việt Nam hoặc bộ hệ số chính thức. Trong dữ liệu thật phải xác lập địa lý, năm, công nghệ, khí bao gồm, GWP và nguồn phiên bản.
+
+| Nguồn | Hệ số giả định | Đơn vị | Công thức |
 | --- | --- | --- | --- |
-| Điện | ≤ 2,4 kWh/đôi với cùng phạm vi | Đo nhánh và điều khiển máy nén; 1,2 tỷ đầu tư | Cơ điện / 31/12/2026 |
-| Nước | ≤ 35 lít/đôi; xác lập stress nước | Phát hiện rò rỉ/đồng hồ; 0,3 tỷ đầu tư | EHS / 31/12/2026 |
-| An toàn | ≤ 2 ca; kiểm che chắn và hiệu lực 90 ngày | Nguyên nhân gốc 3 ca, kiểm tra độc lập; 0,2 tỷ chi phí | EHS / 30/06/2026 |
-| Nhà cung cấp | Đánh giá 100/100, xử lý 4 CAPA mở | Ưu tiên rủi ro, bằng chứng đóng; 0,2 tỷ chi phí | Mua hàng / 30/09/2026 |
-| Dữ liệu và báo cáo | Hệ số thật; kế hoạch 15 nhóm Scope 3; chỉ mục có trạng thái | Chủ dữ liệu, rà soát khung; 0,1 tỷ chi phí | Ban ESG / 30/09/2026 |
+| Điện mua | 0,5 | kgCO2e/kWh | kWh × hệ số / 1.000 → tCO2e |
+| Diesel | 2,68 | kgCO2e/lít | Lít × hệ số / 1.000 |
+| LPG | 3 | kgCO2e/kg | kg × hệ số / 1.000 |
+| Diesel — nhiệt trị | 0,036 | GJ/lít | Lít × nhiệt trị |
+| LPG — nhiệt trị | 0,046 | GJ/kg | kg × nhiệt trị |
+| Điện — quy đổi | 0,0036 | GJ/kWh | kWh × 0,0036 |
 
-Tổng ngân sách dự kiến 2 tỷ đồng, gồm 1,5 tỷ đầu tư và 0,5 tỷ chi phí, là kế hoạch giả định chưa được phê duyệt thật. Mỗi CAPA cần người kiểm hiệu lực khác người thực hiện, kết quả và nguồn. Chọn “đóng” trên web chỉ là ghi trạng thái; bằng chứng kiểm hiệu lực phải đính kèm để tổ chức nghiệm thu.
+Giá trị không được làm tròn từng dòng trước khi tổng hợp. Số trên bảng hiển thị tối đa hai chữ số thập phân; Excel giữ số gốc để tính lại. Thiếu, không áp dụng và số 0 là các trạng thái khác nhau.
 
-## 17. Phụ lục A — bảng KPI đối chiếu
+## Phụ lục A — Bảng KPI đối chiếu
 
 **MẪU GIẢ ĐỊNH — không phải dữ liệu, chữ ký hoặc chứng nhận của doanh nghiệp thật.** Các mã KPI dưới đây là mã của báo cáo minh họa, không tự động trùng bộ 24 KPI mặc định của ứng dụng. Phải tạo hoặc ánh xạ từ điển trước khi nhập dữ liệu thực.
 
@@ -254,7 +308,7 @@ Tổng ngân sách dự kiến 2 tỷ đồng, gồm 1,5 tỷ đầu tư và 0,5
 
 Scope 2 thị trường: thiếu; Scope 3: mới ước tính một phần; không có giá trị 0 đại diện cho hai mục này. Chưa có mục tiêu hoặc tình trạng được đảm bảo độc lập cho mọi KPI.
 
-## 18. Phụ lục B — dữ liệu tháng và sổ bằng chứng
+## Phụ lục B — Dữ liệu tháng và sổ bằng chứng
 
 | Kỳ | Sản lượng đôi | Điện kWh | Diesel lít | LPG kg | Nước lấy m³ | Nước thải m³ |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -290,7 +344,7 @@ Tổng năm: 2.400.000 đôi; 6.000.000 kWh; 48.000 lít diesel; 36.000 kg LPG; 
 
 Ví dụ chuyển dữ liệu thật lên web: đặt mã theo kỳ/cơ sở/KPI/nguồn/phiên bản như 2025-01_CS01_E01_DONGHO01_v01, đăng ký tài liệu nguồn, rồi nhập bản ghi có cùng mã bằng chứng. Không tạo SHA-256, chữ ký hoặc biên bản giả cho mã DEMO.
 
-## 19. Phụ lục C — chỉ mục nội dung tham khảo
+## Phụ lục C — Chỉ mục GRI tham khảo
 
 Bảng là chỉ mục học cách truy xuất, không phải tuyên bố đáp ứng. “Minh họa một phần” nghĩa là có nội dung liên quan nhưng còn thiếu yêu cầu/bằng chứng. Mẫu không sử dụng lý do thiếu này để tự nhận đáp ứng quy định về omissions của GRI.
 
@@ -317,7 +371,7 @@ Bảng là chỉ mục học cách truy xuất, không phải tuyên bố đáp 
 
 Khi lập báo cáo thật, tách từng mã thành một dòng có chương/trang, nội dung đáp ứng, bằng chứng, trạng thái và lý do thiếu hợp lệ. Rà soát phiên bản tiêu chuẩn ngành/khí hậu/năng lượng/đa dạng sinh học và thời điểm áp dụng trước khi công bố.
 
-## 20. Cách dùng mẫu và nguồn
+## Phụ lục D — Cách dùng mẫu và nguồn
 
 1. Dùng [Khung báo cáo ESG](#report-kit) để xác định nội dung cần thu, giữ cả các phần còn thiếu.
 2. Xác lập pháp nhân, phạm vi, chủ đề trọng yếu và từ điển KPI thật; không nhập số liệu DEMO vào dữ liệu chung.

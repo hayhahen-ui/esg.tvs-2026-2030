@@ -37,7 +37,7 @@ describe("reference report reconciliations", () => {
   it("keeps published documentation and browser resources synchronized", () => {
     expect(readFileSync("docs/ESG_REPORT_EXAMPLE.md", "utf8")).toBe(buildExampleReport());
     expect(readFileSync("docs/WORKFLOW_GUIDE.md", "utf8")).toBe(workflowMarkdown());
-    expect(documentChapters(parseDocument(buildExampleReport()))).toHaveLength(21);
+    expect(documentChapters(parseDocument(buildExampleReport()))).toHaveLength(13);
     const outline = readFileSync("docs/ESG_REPORT_OUTLINE.md", "utf8");
     for (let n = 1; n <= 30; n++) expect(outline).toMatch(new RegExp(`\\| 2-${n} \\|`));
   });
