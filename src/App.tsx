@@ -6,6 +6,7 @@ import { ARTICLES, CATEGORIES, CHECKLIST, DEPARTMENTS, QUICK_QUESTIONS, REPORT_O
 import { downloadXlsx } from "./xlsx";
 import { aggregateRecords, reportReadiness, periodContains } from "./esg";
 import EvidenceScreen from "./EvidenceScreen";
+import AiChat from "./AiChat";
 
 const DEPT_OPTS = DEPARTMENTS.map((d) => ({ value: d, label: d }));
 const STATUS_DATA = [{ value: "measured", label: "Đo/ghi thực" }, { value: "estimated", label: "Ước tính" }, { value: "missing", label: "Thiếu" }, { value: "na", label: "Không áp dụng" }];
@@ -152,6 +153,7 @@ function QAScreen({ canWrite }: { canWrite: boolean }) {
   const cols: Col[] = [{ key: "question", label: "Câu hỏi" }, { key: "answer", label: "Trả lời" }, { key: "category", label: "Chủ đề" }, { key: "askedBy", label: "Người hỏi" }, { key: "status", label: "Trạng thái", type: "select", options: [{ value: "open", label: "Chờ soát xét" }, { value: "answered", label: "Đã trả lời" }] }];
   return <section className="screen">
     <header className="screen-head"><div><h2>Hỏi đáp ESG</h2><p className="text-secondary">Tìm tài liệu nền và tài liệu doanh nghiệp liên quan; câu hỏi được lưu để chuyên gia nội bộ trả lời. Gợi ý tìm kiếm cần được soát xét trước khi áp dụng.</p></div></header>
+    <AiChat knowledge={knowledge} />
     <div className="card">
       <label className="field"><span className="text-label">Câu hỏi của bạn</span><textarea className="input" rows={3} placeholder="Nhà máy nên chọn năm cơ sở nào và cần điều kiện gì?" value={q} onChange={(e) => setQ(e.target.value)} /></label>
       <div className="row wrap gap chips">{QUICK_QUESTIONS.map((text) => <button key={text} className="chip" onClick={() => setQ(text)}>{text}</button>)}</div>
