@@ -552,3 +552,14 @@ a:hover {
 .chat-msg .disclaimer { margin-top: 8px; font-size: 12px; color: var(--fg-muted); border-top: 1px dashed var(--border-subtle); padding-top: 6px; }
 .chat-input-row { display: flex; gap: 8px; margin-top: 12px; }
 .chat-input-row .input { flex: 1; }
+
+/* --- Biểu đồ báo cáo --- */
+.chart-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 900px) { .chart-grid { grid-template-columns: 1fr 1fr; } }
+.chart-title { font-size: 15px; font-weight: 700; margin: 0 0 8px; color: var(--text, #ece9f5); }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 8px; font-size: 12px; color: var(--muted, #9a94ad); }
+.chart-legend.col { flex-direction: column; gap: 6px; }
+.chart-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.chart-calc { margin-top: 10px; border-top: 1px dashed rgba(255,255,255,0.12); padding-top: 8px; }
+.chart-calc summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted, #9a94ad); }
+.chart-calc p { margin: 6px 0; }
