@@ -80,6 +80,13 @@ const STR: Record<string, Record<ReportLang, string>> = {
     en: "20 chapters for drafting and data-entry practice, with formulas, reconciliation tables and fictional monthly data; Eclat figures kept separate.",
     zh: "20 章用于练习编制与数据录入，含公式、核对表与假设月度数据；Eclat 数据单独列示。",
   },
+  pdfExport: { vi: "Xuất PDF (mẫu Eclat)", en: "Export PDF (Eclat-style)", zh: "导出PDF（Eclat样式）" },
+  pdfCoverSub: {
+    vi: "Báo cáo ESG — Doanh nghiệp giả định",
+    en: "ESG Report — Fictional Company",
+    zh: "ESG报告——虚拟企业",
+  },
+  pdfContents: { vi: "Mục lục", en: "Contents", zh: "目录" },
   trainingPerPerson: { vi: "Giờ đào tạo/người", en: "Training hours/person", zh: "人均培训时长" },
   injuryRate: { vi: "Tỷ suất chấn thương (ca/triệu giờ)", en: "Injury rate (cases/million hours)", zh: "工伤率（例/百万工时）" },
 

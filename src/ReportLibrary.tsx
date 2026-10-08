@@ -1,50 +1,24 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import ResourceScreen from "./ResourceScreen";
 import ReportCharts from "./ReportCharts";
 import auditMarkdown from "../docs/AUDIT.md?raw";
 import outlineMarkdown from "../docs/ESG_REPORT_OUTLINE.md?raw";
-import { buildExampleReport, exampleSheets, SAMPLE_WARNING } from "./reportExample";
+import { buildExampleReport, exampleSheets } from "./reportExample";
 import { buildEclatReport, eclatSheets, ECLAT_SOURCE, ECLAT_WARNING } from "./eclatReference";
 import { downloadXlsx } from "./xlsx";
-import { apiKeyStore } from "./apiKeys";
 import { REPORT_LANGS, loadReportLang, saveReportLang, t, type ReportLang } from "./reportI18n";
-import { translateMarkdown } from "./reportTranslate";
+import { printEclatPdf } from "./reportPrint";
 
-/** Tab "Mẫu giả định": biểu đồ + báo cáo 20 chương, chuyển ngữ VI/EN/ZH. */
+/** Tab "Mẫu giả định": biểu đồ + báo cáo 20 chương, chuyển ngữ VI/EN/ZH tức thì. */
 function FictionalReport() {
   const [lang, setLang] = useState<ReportLang>(() => loadReportLang());
-  const [translated, setTranslated] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [progress, setProgress] = useState("");
-  const [error, setError] = useState("");
-  const sourceMd = useMemo(() => buildExampleReport(), []);
+  const shownMd = useMemo(() => buildExampleReport(lang), [lang]);
+  const title = t(lang, "reportSampleTitle");
 
-  useEffect(() => {
-    saveReportLang(lang);
-    if (lang === "vi") {
-      setTranslated(null); setError(""); setBusy(false);
-      return;
-    }
-    const apiKey = apiKeyStore.load().explabs;
-    if (!apiKey) {
-      setTranslated(null); setBusy(false);
-      setError(t(lang, "needAiKey"));
-      return;
-    }
-    let cancelled = false;
-    setBusy(true); setError(""); setProgress("");
-    translateMarkdown(sourceMd, lang, apiKey, (done, total) => {
-      if (!cancelled) setProgress(`${t(lang, "translating")} ${done}/${total}…`);
-    })
-      .then((md) => { if (!cancelled) { setTranslated(md); setBusy(false); } })
-      .catch(() => { if (!cancelled) { setError(t(lang, "needAiKey")); setBusy(false); } });
-    return () => { cancelled = true; };
-  }, [lang, sourceMd]);
-
-  const shownMd = translated ?? sourceMd;
-  const notice = lang === "vi"
-    ? SAMPLE_WARNING
-    : `${t(lang, "sampleNote")} ${t(lang, "machineTranslated")}`;
+  const changeLang = (l: ReportLang) => {
+    saveReportLang(l);
+    setLang(l);
+  };
 
   return (
     <>
@@ -53,19 +27,20 @@ function FictionalReport() {
           <span className="text-small"><strong>{t(lang, "langLabel")}:</strong></span>
           {REPORT_LANGS.map((l) => (
             <button key={l.id} className={`button ${lang === l.id ? "button-primary" : ""}`}
-              aria-pressed={lang === l.id} onClick={() => setLang(l.id)}>{l.label}</button>
+              aria-pressed={lang === l.id} onClick={() => changeLang(l.id)}>{l.label}</button>
           ))}
-          {(busy || error) && <span className="text-small text-secondary" role="status">{busy ? progress : error}</span>}
+          <span style={{ flex: 1 }} />
+          <button className="button" onClick={() => printEclatPdf(lang, title, shownMd)}>🖨️ {t(lang, "pdfExport")}</button>
         </div>
       </div>
       <ReportCharts lang={lang} />
       <div style={{ height: 16 }} />
       <ResourceScreen
-        title={t(lang, "reportSampleTitle")}
+        title={title}
         intro={t(lang, "reportSampleIntro")}
         markdown={shownMd}
         filename={`ESG_Hub_bao_cao_GIA_DINH_2025${lang === "vi" ? "" : "_" + lang.toUpperCase()}`}
-        notice={notice}
+        notice={t(lang, "sampleNote")}
         actions={<button className="button" onClick={() => downloadXlsx("ESG_Hub_phu_luc_GIA_DINH_2025", exampleSheets())}>Tải phụ lục mẫu (.xlsx)</button>}
       />
     </>

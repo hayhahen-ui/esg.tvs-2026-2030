@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { exampleYears, sampleMetrics, sampleMonths } from "./reportExample";
 import { fmtNum, monthName, t, type ReportLang } from "./reportI18n";
+import { fill, rp } from "./reportProse";
 import { CHART_COLORS, Donut, GroupedBars, SingleBars } from "./charts";
 
 function Calc({ lang, children }: { lang: ReportLang; children: ReactNode }) {
@@ -50,8 +51,8 @@ export default function ReportCharts({ lang }: { lang: ReportLang }) {
             formatValue={(v) => `${f1(v)} ${t(lang, "unitTco2e")}`}
           />
           <Calc lang={lang}>
-            <p>Scope 1 = (diesel_lít × 2,68 + LPG_kg × 3) / 1000 → 2025: ({f0(y25.dieselLitres)} × 2,68 + {f0(y25.lpgKg)} × 3)/1000 = {f1(m25.scope1)} {t(lang, "unitTco2e")}.</p>
-            <p>Scope 2 = điện_kWh × 0,5 / 1000 → 2025: {f0(y25.electricityKwh)} × 0,5/1000 = {f1(m25.scope2Location)} {t(lang, "unitTco2e")}.</p>
+            <p>{fill(rp(lang, "ex_calc_ghg1"), { d: f0(y25.dieselLitres), l: f0(y25.lpgKg), v: f1(m25.scope1), u: t(lang, "unitTco2e") })}</p>
+            <p>{fill(rp(lang, "ex_calc_ghg2"), { kwh: f0(y25.electricityKwh), v: f1(m25.scope2Location), u: t(lang, "unitTco2e") })}</p>
             <p>{t(lang, "source")}: {t(lang, "sampleDataYears")} — DEMO-FUEL + DEMO-ELEC.</p>
           </Calc>
         </div>
@@ -70,8 +71,8 @@ export default function ReportCharts({ lang }: { lang: ReportLang }) {
             formatValue={(v) => f1(v)}
           />
           <Calc lang={lang}>
-            <p>kWh/đôi = ΣkWh / Σđôi; kgCO₂e/đôi = (Scope 1 + Scope 2) × 1000 / Σđôi; lít/đôi = Σm³ × 1000 / Σđôi. Chỉ số = giá trị 2025 / giá trị 2024 × 100.</p>
-            <p>2025: {f2(m25.electricityPerPair)} kWh/đôi · {f2(m25.ghgKgPerPair)} kgCO₂e/đôi · {f1(m25.waterLitresPerPair)} lít/đôi.</p>
+            <p>{rp(lang, "ex_calc_int1")}</p>
+            <p>{fill(rp(lang, "ex_calc_int2"), { e: f2(m25.electricityPerPair), g: f2(m25.ghgKgPerPair), w: f1(m25.waterLitresPerPair) })}</p>
           </Calc>
         </div>
 
@@ -112,7 +113,7 @@ export default function ReportCharts({ lang }: { lang: ReportLang }) {
             formatValue={f1}
           />
           <Calc lang={lang}>
-            <p>= Σ giờ đào tạo / nhân viên cuối kỳ. 2025: {f0(y25.trainingHours)} / {f0(y25.employees)} = {f1(m25.trainingHoursPerEmployee)}.</p>
+            <p>{fill(rp(lang, "ex_calc_train"), { h: f0(y25.trainingHours), e: f0(y25.employees), v: f1(m25.trainingHoursPerEmployee) })}</p>
           </Calc>
         </div>
       </div>
