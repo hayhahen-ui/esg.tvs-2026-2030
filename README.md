@@ -47,3 +47,4 @@ Xem [audit và kế hoạch kaizen](docs/AUDIT.md), [quy tắc chất lượng d
 - [Khung sườn báo cáo ESG chuẩn hoàn chỉnh](docs/khung-suon-bao-cao-esg.md) — cấu trúc 9 chương tổng hợp từ 5 báo cáo thực tế (Dunlop, Yue Yuen, Fulgent Sun, Rocky Brands, Eclat Textile 2024), checklist nội dung từng chương, ánh xạ GRI và nguồn dữ liệu trên app.
 - [Báo cáo ESG mẫu hoàn chỉnh](docs/bao-cao-mau-esg.md) — mẫu tham chiếu đã điền đầy đủ (⚠️ mọi số liệu đều hư cấu minh họa, không phải số liệu thật).
 - Sơ đồ vận hành cho nhân viên: mở nút **"🗺️ Sơ đồ vận hành"** trên màn Tổng quan, hoặc file `public/so-do-van-hanh.html` (được serve tại `/so-do-van-hanh.html` sau khi deploy).
+- Báo cáo mẫu hoàn chỉnh: nút **"📄 Báo cáo mẫu"** trên màn Tổng quan, hoặc file `public/bao-cao-mau.html` (`/bao-cao-mau.html` sau khi deploy).
