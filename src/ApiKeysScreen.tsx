@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { apiKeyStore, maskKey } from "./apiKeys";
+import { apiKeyStore, customModelStore, maskKey } from "./apiKeys";
 import { AI_MODELS, DEFAULT_AI_MODEL, type ChatModel } from "./ai";
 
 type Which = "tinyfish" | "explabs";
@@ -15,6 +15,10 @@ export default function ApiKeysScreen() {
   const [testing, setTesting] = useState<Which | null>(null);
   const [testMsg, setTestMsg] = useState<Record<string, string>>({});
   const [models, setModels] = useState<ChatModel[]>(AI_MODELS);
+  const [customModels, setCustomModels] = useState(() => customModelStore.load());
+  const [newModelId, setNewModelId] = useState("");
+  const [newModelLabel, setNewModelLabel] = useState("");
+  const [modelMsg, setModelMsg] = useState("");
 
   useEffect(() => {
     fetch("/api/ai-chat")
@@ -24,6 +28,33 @@ export default function ApiKeysScreen() {
       })
       .catch(() => { /* dùng danh sách mặc định */ });
   }, []);
+
+  const allModels: ChatModel[] = [
+    ...models,
+    ...customModels.filter((c) => !models.some((m) => m.id === c.id)),
+  ];
+
+  const addModel = () => {
+    const r = customModelStore.add(
+      { id: newModelId, label: newModelLabel },
+      models.map((m) => m.id),
+    );
+    if (!r.ok) {
+      setModelMsg(`❌ ${r.error}`);
+      return;
+    }
+    setCustomModels(customModelStore.load());
+    setKeys((k) => ({ ...k, model: newModelId.trim() }));
+    setNewModelId("");
+    setNewModelLabel("");
+    setModelMsg("✅ Đã thêm model.");
+  };
+
+  const removeModel = (id: string) => {
+    customModelStore.remove(id);
+    setCustomModels(customModelStore.load());
+    setKeys((k) => (k.model === id ? { ...k, model: DEFAULT_AI_MODEL } : k));
+  };
 
   const save = () => {
     apiKeyStore.save(keys);
@@ -45,10 +76,13 @@ export default function ApiKeysScreen() {
     }
     setTesting(which);
     try {
+      const payload = which === "explabs"
+        ? { action: "ping", apiKey, model: keys.model }
+        : { action: "ping", apiKey };
       const r = await fetch(field.endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "ping", apiKey }),
+        body: JSON.stringify(payload),
       });
       const d = (await r.json().catch(() => ({}))) as { ok?: boolean; count?: number; model?: string; error?: string; status?: number };
       if (d.ok) {
@@ -80,13 +114,36 @@ export default function ApiKeysScreen() {
 
       <div className="card">
         <h3 style={{ margin: "0 0 4px" }}>Model AI</h3>
-        <p className="text-small text-secondary" style={{ margin: "0 0 10px" }}>Model dùng cho nút “✨ Diễn giải bằng AI” trong chatbot. Danh sách do server cung cấp.</p>
+        <p className="text-small text-secondary" style={{ margin: "0 0 10px" }}>Model dùng cho nút “✨ Diễn giải bằng AI” trong chatbot. Danh sách do server cung cấp; bạn có thể tự thêm model khác bên dưới.</p>
         <label className="field" style={{ maxWidth: 360 }}>
           <span className="text-label">Chọn model</span>
           <select className="input" value={keys.model} onChange={(e) => setKeys((k) => ({ ...k, model: e.target.value }))} aria-label="Chọn model AI">
-            {models.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
+            {allModels.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
           </select>
         </label>
+        <div className="row wrap gap" style={{ marginTop: 10 }}>
+          <input
+            className="input" style={{ maxWidth: 280 }} placeholder="Nhập tên model, vd: claude-sonnet-4.5"
+            value={newModelId} onChange={(e) => setNewModelId(e.target.value)} aria-label="Tên model tùy chỉnh"
+          />
+          <input
+            className="input" style={{ maxWidth: 220 }} placeholder="Tên hiển thị (tùy chọn)"
+            value={newModelLabel} onChange={(e) => setNewModelLabel(e.target.value)} aria-label="Tên hiển thị model"
+          />
+          <button className="button" disabled={!newModelId.trim()} onClick={addModel}>+ Thêm model</button>
+        </div>
+        {modelMsg && <p className="text-small" role="status" style={{ marginTop: 8 }}>{modelMsg}</p>}
+        {customModels.length > 0 && (
+          <div className="row wrap gap chips" style={{ marginTop: 8 }}>
+            {customModels.map((c) => (
+              <span key={c.id} className="chip" title={c.id}>{c.label}
+                <button
+                  onClick={() => removeModel(c.id)} aria-label={`Xóa model ${c.id}`}
+                  style={{ background: "none", border: 0, cursor: "pointer", marginLeft: 6, color: "inherit" }}>✕</button>
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {FIELDS.map((f) => {

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ARTICLES, QUICK_QUESTIONS } from "./content";
 import { AI_DISCLAIMER, AI_GENERATED_DISCLAIMER, DEFAULT_AI_MODEL, type ChatModel, type WebResult } from "./ai";
-import { apiKeyStore } from "./apiKeys";
+import { apiKeyStore, customModelStore } from "./apiKeys";
 
 interface ArticleLike { id: string; title: string; summary: string; content: string; category: string; source: string }
 interface ChatMsg {
@@ -32,6 +32,7 @@ export default function AiChat({ knowledge }: {
   const [webBusyId, setWebBusyId] = useState<number | null>(null);
   const [aiBusyId, setAiBusyId] = useState<number | null>(null);
   const [models, setModels] = useState<ChatModel[]>([]);
+  const [customModels, setCustomModels] = useState(() => customModelStore.load());
   const [aiReady, setAiReady] = useState(false);
   const [model, setModel] = useState<string>(() => apiKeyStore.load().model || DEFAULT_AI_MODEL);
   const [localKeys, setLocalKeys] = useState(() => apiKeyStore.load());
@@ -40,12 +41,14 @@ export default function AiChat({ knowledge }: {
   useEffect(() => {
     const stored = apiKeyStore.load();
     setLocalKeys(stored);
+    setCustomModels(customModelStore.load());
     fetch("/api/ai-chat").then((r) => r.json()).then((d: { configured?: boolean; models?: ChatModel[]; defaultModel?: string }) => {
       const serverModels = Array.isArray(d.models) ? d.models : [];
       if (serverModels.length) {
         setModels(serverModels);
-        // model đã lưu không còn được server hỗ trợ → dùng mặc định của server
-        if (!serverModels.some((m) => m.id === stored.model) && d.defaultModel) {
+        const known = [...serverModels, ...customModelStore.load()];
+        // model đã lưu không còn được hỗ trợ → dùng mặc định của server
+        if (!known.some((m) => m.id === stored.model) && d.defaultModel) {
           setModel(d.defaultModel);
         } else {
           setModel(stored.model);
@@ -56,6 +59,11 @@ export default function AiChat({ knowledge }: {
       if (stored.explabs) setAiReady(true);
     });
   }, []);
+
+  const allModels: ChatModel[] = useMemo(() => [
+    ...models,
+    ...customModels.filter((c) => !models.some((m) => m.id === c.id)),
+  ], [models, customModels]);
 
   const changeModel = (id: string) => {
     setModel(id);
@@ -166,11 +174,11 @@ export default function AiChat({ knowledge }: {
     <div className="card">
       <div className="row between wrap" style={{ marginBottom: 4 }}>
         <h3 style={{ margin: 0 }}>💬 Trợ lý AI hỏi đáp nhanh</h3>
-        {aiReady && models.length > 0 && (
+        {aiReady && allModels.length > 0 && (
           <label className="field" style={{ minWidth: 220 }}>
             <span className="text-small">Model AI</span>
             <select className="input" value={model} onChange={(e) => changeModel(e.target.value)} aria-label="Chọn model AI">
-              {models.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
+              {allModels.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
             </select>
           </label>
         )}

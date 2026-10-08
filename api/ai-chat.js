@@ -11,8 +11,12 @@ const AI_MODELS = [
 ];
 const DEFAULT_AI_MODEL = AI_MODELS[0].id;
 
+// Model hợp lệ: có trong danh sách built-in, hoặc tên tùy chỉnh đúng định dạng
+// (chữ/số và . - _ / : , tối đa 80 ký tự) — khớp MODEL_ID_RE phía client.
+const MODEL_ID_RE = /^[A-Za-z0-9][A-Za-z0-9._\-/:]{0,79}$/;
+
 function isAllowedModel(id) {
-  return AI_MODELS.some((m) => m.id === id);
+  return AI_MODELS.some((m) => m.id === id) || MODEL_ID_RE.test(String(id ?? ""));
 }
 
 const AI_SYSTEM_PROMPT = [

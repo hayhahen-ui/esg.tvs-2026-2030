@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { apiKeyStore, createKeyStore, maskKey } from "../src/apiKeys";
+import { apiKeyStore, createKeyStore, createModelStore, maskKey } from "../src/apiKeys";
 import { DEFAULT_AI_MODEL } from "../src/ai";
 
 function memStore() {
@@ -36,5 +36,29 @@ describe("apiKeyStore", () => {
   });
   it("apiKeyStore mặc định không ném lỗi khi không có window", () => {
     expect(() => apiKeyStore.load()).not.toThrow();
+  });
+});
+
+describe("customModelStore", () => {
+  it("thêm / liệt kê / xóa model", () => {
+    const store = createModelStore(memStore());
+    expect(store.load()).toEqual([]);
+    expect(store.add({ id: "claude-sonnet-4.5", label: "Sonnet" }).ok).toBe(true);
+    expect(store.load()).toEqual([{ id: "claude-sonnet-4.5", label: "Sonnet" }]);
+    store.remove("claude-sonnet-4.5");
+    expect(store.load()).toEqual([]);
+  });
+  it("từ chối tên không hợp lệ và trùng", () => {
+    const store = createModelStore(memStore());
+    expect(store.add({ id: "bad model!", label: "" }).ok).toBe(false);
+    expect(store.add({ id: "", label: "" }).ok).toBe(false);
+    expect(store.add({ id: "claude-haiku-5.5", label: "" }, ["claude-haiku-5.5"]).ok).toBe(false);
+    store.add({ id: "m1", label: "" });
+    expect(store.add({ id: "m1", label: "" }).ok).toBe(false);
+  });
+  it("lọc bỏ model hỏng khi đọc", () => {
+    const s = memStore();
+    s.setItem("esg_custom_models_v1", JSON.stringify([{ id: "ok-model", label: "OK" }, { id: "xấu!", label: "X" }, "chuỗi"]));
+    expect(createModelStore(s).load()).toEqual([{ id: "ok-model", label: "OK" }]);
   });
 });

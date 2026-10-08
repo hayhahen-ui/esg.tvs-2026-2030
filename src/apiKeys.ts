@@ -58,3 +58,48 @@ function browserStorage(): SimpleStorage {
 }
 
 export const apiKeyStore = createKeyStore(browserStorage());
+
+// --- Model tùy chỉnh do người dùng tự nhập ---
+
+export interface CustomModel { id: string; label: string }
+
+const MODELS_KEY = "esg_custom_models_v1";
+
+/** Tên model hợp lệ: chữ/số và . - _ / : , tối đa 80 ký tự. Server kiểm tra lại bằng regex này. */
+export const MODEL_ID_RE = /^[A-Za-z0-9][A-Za-z0-9._\-/:]{0,79}$/;
+
+export function createModelStore(storage: SimpleStorage) {
+  const api = {
+    load(): CustomModel[] {
+      try {
+        const raw = storage.getItem(MODELS_KEY);
+        if (!raw) return [];
+        const arr: unknown = JSON.parse(raw);
+        if (!Array.isArray(arr)) return [];
+        return arr
+          .filter((m): m is Record<string, unknown> => !!m && typeof m === "object" && MODEL_ID_RE.test(String((m as Record<string, unknown>).id ?? "")))
+          .map((m) => ({ id: String(m.id), label: String(m.label || m.id) }));
+      } catch {
+        return [];
+      }
+    },
+    add(model: CustomModel, reservedIds: string[] = []): { ok: boolean; error?: string } {
+      const id = model.id.trim();
+      if (!MODEL_ID_RE.test(id)) {
+        return { ok: false, error: "Tên model không hợp lệ (chỉ gồm chữ, số và . - _ / : , tối đa 80 ký tự)." };
+      }
+      if (reservedIds.includes(id)) return { ok: false, error: "Model này đã có sẵn trong danh sách." };
+      const list = api.load();
+      if (list.some((m) => m.id === id)) return { ok: false, error: "Model đã có trong danh sách." };
+      list.push({ id, label: model.label.trim() || id });
+      storage.setItem(MODELS_KEY, JSON.stringify(list));
+      return { ok: true };
+    },
+    remove(id: string): void {
+      storage.setItem(MODELS_KEY, JSON.stringify(api.load().filter((m) => m.id !== id)));
+    },
+  };
+  return api;
+}
+
+export const customModelStore = createModelStore(browserStorage());
