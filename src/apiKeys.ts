@@ -4,7 +4,10 @@
 
 import { DEFAULT_AI_MODEL, isAllowedModel } from "./ai";
 
-export interface ApiKeySet { tinyfish: string; explabs: string; model: string }
+/** Model mặc định cho Decisions API (/api/ai-decide). */
+export const DEFAULT_DECIDE_MODEL = "gpt-6-luna-decisions";
+
+export interface ApiKeySet { tinyfish: string; explabs: string; model: string; decideModel: string }
 
 const STORAGE_KEY = "esg_api_keys_v1";
 
@@ -22,16 +25,18 @@ export interface SimpleStorage {
 export function createKeyStore(storage: SimpleStorage) {
   return {
     load(): ApiKeySet {
-      const empty = { tinyfish: "", explabs: "", model: DEFAULT_AI_MODEL };
+      const empty = { tinyfish: "", explabs: "", model: DEFAULT_AI_MODEL, decideModel: DEFAULT_DECIDE_MODEL };
       try {
         const raw = storage.getItem(STORAGE_KEY);
         if (!raw) return empty;
         const p = JSON.parse(raw) as Partial<ApiKeySet>;
         const model = String(p.model ?? DEFAULT_AI_MODEL);
+        const decideModel = String(p.decideModel ?? DEFAULT_DECIDE_MODEL).trim();
         return {
           tinyfish: String(p.tinyfish ?? ""),
           explabs: String(p.explabs ?? ""),
           model: isAllowedModel(model) ? model : DEFAULT_AI_MODEL,
+          decideModel: MODEL_ID_RE.test(decideModel) ? decideModel : DEFAULT_DECIDE_MODEL,
         };
       } catch {
         return empty;
@@ -39,7 +44,13 @@ export function createKeyStore(storage: SimpleStorage) {
     },
     save(keys: ApiKeySet): void {
       const model = isAllowedModel(keys.model) ? keys.model : DEFAULT_AI_MODEL;
-      storage.setItem(STORAGE_KEY, JSON.stringify({ tinyfish: keys.tinyfish.trim(), explabs: keys.explabs.trim(), model }));
+      const decideModel = keys.decideModel.trim();
+      storage.setItem(STORAGE_KEY, JSON.stringify({
+        tinyfish: keys.tinyfish.trim(),
+        explabs: keys.explabs.trim(),
+        model,
+        decideModel: MODEL_ID_RE.test(decideModel) ? decideModel : DEFAULT_DECIDE_MODEL,
+      }));
     },
     clear(): void {
       storage.removeItem(STORAGE_KEY);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { apiKeyStore, createKeyStore, createModelStore, maskKey } from "../src/apiKeys";
+import { apiKeyStore, createKeyStore, createModelStore, maskKey, DEFAULT_DECIDE_MODEL } from "../src/apiKeys";
 import { DEFAULT_AI_MODEL } from "../src/ai";
 
 function memStore() {
@@ -14,20 +14,21 @@ function memStore() {
 describe("apiKeyStore", () => {
   it("lưu / đọc / xóa key", () => {
     const store = createKeyStore(memStore());
-    expect(store.load()).toEqual({ tinyfish: "", explabs: "", model: DEFAULT_AI_MODEL });
-    store.save({ tinyfish: "  sk-tf-1234  ", explabs: "xpl-9999", model: "claude-haiku-5.5" });
-    expect(store.load()).toEqual({ tinyfish: "sk-tf-1234", explabs: "xpl-9999", model: "claude-haiku-5.5" });
+    expect(store.load()).toEqual({ tinyfish: "", explabs: "", model: DEFAULT_AI_MODEL, decideModel: DEFAULT_DECIDE_MODEL });
+    store.save({ tinyfish: "  sk-tf-1234  ", explabs: "xpl-9999", model: "claude-haiku-5.5", decideModel: "gpt-6-luna-decisions" });
+    expect(store.load()).toEqual({ tinyfish: "sk-tf-1234", explabs: "xpl-9999", model: "claude-haiku-5.5", decideModel: "gpt-6-luna-decisions" });
     store.clear();
-    expect(store.load()).toEqual({ tinyfish: "", explabs: "", model: DEFAULT_AI_MODEL });
+    expect(store.load()).toEqual({ tinyfish: "", explabs: "", model: DEFAULT_AI_MODEL, decideModel: DEFAULT_DECIDE_MODEL });
   });
   it("chịu được dữ liệu hỏng", () => {
     const s = memStore();
     s.setItem("esg_api_keys_v1", "không phải json{{{");
-    expect(createKeyStore(s).load()).toEqual({ tinyfish: "", explabs: "", model: DEFAULT_AI_MODEL });
+    expect(createKeyStore(s).load()).toEqual({ tinyfish: "", explabs: "", model: DEFAULT_AI_MODEL, decideModel: DEFAULT_DECIDE_MODEL });
   });
   it("model lạ → fallback về mặc định", () => {
     const s = memStore();
-    s.setItem("esg_api_keys_v1", JSON.stringify({ tinyfish: "", explabs: "", model: "gpt-xxx" }));
+    s.setItem("esg_api_keys_v1", JSON.stringify({ tinyfish: "", explabs: "", model: "gpt-xxx", decideModel: "xấu!" }));
+    expect(createKeyStore(s).load().decideModel).toBe(DEFAULT_DECIDE_MODEL);
     expect(createKeyStore(s).load().model).toBe(DEFAULT_AI_MODEL);
   });
   it("maskKey che phần đầu, chừa 4 ký tự cuối", () => {

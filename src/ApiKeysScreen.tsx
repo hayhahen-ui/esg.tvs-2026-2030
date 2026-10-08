@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { apiKeyStore, customModelStore, maskKey } from "./apiKeys";
+import { apiKeyStore, customModelStore, maskKey, DEFAULT_DECIDE_MODEL } from "./apiKeys";
 import { AI_MODELS, DEFAULT_AI_MODEL, type ChatModel } from "./ai";
 
 type Which = "tinyfish" | "explabs";
@@ -8,6 +8,15 @@ const FIELDS: Array<{ id: Which; label: string; desc: string; endpoint: string }
   { id: "tinyfish", label: "TinyFish API Key", desc: "Dùng cho nút “🔍 Tìm trên web” trong chatbot. Search API hiện miễn phí.", endpoint: "/api/qa-search" },
   { id: "explabs", label: "Experiential Labs API Key", desc: "Dùng cho nút “✨ Diễn giải bằng AI” (model Claude Haiku 5.5).", endpoint: "/api/ai-chat" },
 ];
+
+/** Gợi ý theo mã lỗi khi kiểm tra kết nối thất bại. */
+function hintFor(d: { error?: string; status?: number }): string {
+  if (d.status === 503) return "model này chưa được triển khai phía nhà cung cấp — thử model khác hoặc hỏi nhà cung cấp.";
+  if (d.status === 401 || d.status === 403) return "kiểm tra lại key.";
+  if (d.status === 429) return "bị giới hạn tốc độ — đợi một lúc rồi thử lại.";
+  if (d.error === "empty_reply") return "máy chủ trả về rỗng — thử lại.";
+  return "kiểm tra lại key.";
+}
 
 export default function ApiKeysScreen() {
   const [keys, setKeys] = useState(apiKeyStore.load());
@@ -19,6 +28,8 @@ export default function ApiKeysScreen() {
   const [newModelId, setNewModelId] = useState("");
   const [newModelLabel, setNewModelLabel] = useState("");
   const [modelMsg, setModelMsg] = useState("");
+  const [decideTesting, setDecideTesting] = useState(false);
+  const [decideMsg, setDecideMsg] = useState("");
 
   useEffect(() => {
     fetch("/api/ai-chat")
@@ -63,8 +74,9 @@ export default function ApiKeysScreen() {
   };
   const clearAll = () => {
     apiKeyStore.clear();
-    setKeys({ tinyfish: "", explabs: "", model: DEFAULT_AI_MODEL });
+    setKeys({ tinyfish: "", explabs: "", model: DEFAULT_AI_MODEL, decideModel: DEFAULT_DECIDE_MODEL });
     setTestMsg({});
+    setDecideMsg("");
   };
 
   const test = async (which: Which) => {
@@ -88,19 +100,40 @@ export default function ApiKeysScreen() {
       if (d.ok) {
         setTestMsg((m) => ({ ...m, [which]: `✅ Kết nối OK${d.count !== undefined ? ` (thử tìm: ${d.count} kết quả)` : ""}${d.model ? ` · model ${d.model}` : ""}` }));
       } else {
-        const hint = d.status === 503
-          ? "model này chưa được triển khai phía nhà cung cấp — thử model khác hoặc hỏi nhà cung cấp."
-          : d.status === 401 || d.status === 403
-            ? "kiểm tra lại key."
-            : d.status === 429
-              ? "bị giới hạn tốc độ — đợi một lúc rồi thử lại."
-              : "kiểm tra lại key.";
-        setTestMsg((m) => ({ ...m, [which]: `❌ Lỗi: ${d.error ?? "không rõ"}${d.status ? ` (mã ${d.status})` : ""} — ${hint}` }));
+        setTestMsg((m) => ({ ...m, [which]: `❌ Lỗi: ${d.error ?? "không rõ"}${d.status ? ` (mã ${d.status})` : ""} — ${hintFor(d)}` }));
       }
     } catch {
       setTestMsg((m) => ({ ...m, [which]: "❌ Không kết nối được server, thử lại sau." }));
     } finally {
       setTesting(null);
+    }
+  };
+
+  const testDecide = async () => {
+    const apiKey = keys.explabs.trim();
+    if (!apiKey) {
+      setDecideMsg("Chưa nhập Experiential Labs API key ở trên.");
+      return;
+    }
+    const model = keys.decideModel.trim() || DEFAULT_DECIDE_MODEL;
+    setDecideTesting(true);
+    setDecideMsg("");
+    try {
+      const r = await fetch("/api/ai-decide", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "ping", apiKey, model }),
+      });
+      const d = (await r.json().catch(() => ({}))) as { ok?: boolean; model?: string; error?: string; status?: number };
+      if (d.ok) {
+        setDecideMsg(`✅ Kết nối OK · model ${d.model ?? model}`);
+      } else {
+        setDecideMsg(`❌ Lỗi: ${d.error ?? "không rõ"}${d.status ? ` (mã ${d.status})` : ""} — ${hintFor(d)}`);
+      }
+    } catch {
+      setDecideMsg("❌ Không kết nối được server, thử lại sau.");
+    } finally {
+      setDecideTesting(false);
     }
   };
 
@@ -177,6 +210,29 @@ export default function ApiKeysScreen() {
           </div>
         );
       })}
+
+      <div className="card">
+        <h3 style={{ margin: "0 0 4px" }}>Decisions API</h3>
+        <p className="text-small text-secondary" style={{ margin: "0 0 10px" }}>
+          Kiểm tra proxy <code>/api/ai-decide</code> (endpoint <code>/v1/decisions</code> — ra quyết định có cấu trúc).
+          Dùng chung key Experiential Labs ở trên. Model decisions (vd <code>gpt-6-luna-decisions</code>) chỉ chạy ở đây, không dùng cho chat.
+        </p>
+        <label className="field" style={{ maxWidth: 360 }}>
+          <span className="text-label">Model decisions</span>
+          <input
+            className="input" placeholder={DEFAULT_DECIDE_MODEL}
+            value={keys.decideModel}
+            onChange={(e) => setKeys((k) => ({ ...k, decideModel: e.target.value }))}
+            aria-label="Model decisions" spellCheck={false}
+          />
+        </label>
+        <div className="row wrap gap" style={{ marginTop: 10 }}>
+          <button className="button" disabled={decideTesting || !keys.explabs.trim()} onClick={testDecide}>
+            {decideTesting ? "Đang kiểm tra…" : "Kiểm tra kết nối"}
+          </button>
+        </div>
+        {decideMsg && <p className="text-small" role="status" style={{ marginTop: 8 }}>{decideMsg}</p>}
+      </div>
 
       <div className="row wrap gap">
         <button className="button button-primary" onClick={save}>{savedTick ? "Đã lưu ✓" : "Lưu key"}</button>
