@@ -284,18 +284,3 @@ export const QUICK_QUESTIONS = [
   "Thế nào là greenwashing và cách tránh?",
   "Chủ đề trọng yếu được xác định như thế nào?",
 ];
-
-// Khung 9 chương báo cáo ESG chuẩn cho ngành giày (từ bài a10),
-// dùng làm mẫu khởi tạo báo cáo ở màn Báo cáo.
-export const REPORT_OUTLINE: Array<{ code: string; title: string; gri: string; items: string[] }> = [
-  { code: "C0", title: "Thư từ Lãnh đạo / Tuyên bố CEO", gri: "GRI 2-22", items: ["Cam kết của Ban Giám đốc về phát triển bền vững", "Tóm tắt thành tựu ESG nổi bật trong kỳ báo cáo", "Định hướng chiến lược ESG giai đoạn tiếp theo"] },
-  { code: "C1", title: "Giới thiệu Doanh nghiệp & Tổng quan", gri: "GRI 2-1 đến 2-6", items: ["Hồ sơ doanh nghiệp: tên, lịch sử, quy mô, địa điểm sản xuất", "Dữ liệu nhân lực tổng quan: tổng số, tỷ lệ giới tính, quốc tịch", "Danh mục sản phẩm, thị trường và phân khúc khách hàng", "Chứng nhận (ISO 14001, ISO 45001...) và giải thưởng nổi bật", "Các mốc ESG quan trọng (timeline)"] },
-  { code: "C2", title: "Quản trị ESG (Governance)", gri: "GRI 2-9 đến 2-29; SASB", items: ["Cấu trúc quản trị: HĐQT, Ủy ban ESG, phân công trách nhiệm", "Đạo đức kinh doanh: chống tham nhũng, kênh phản ánh, tuân thủ pháp luật", "Quản lý rủi ro ESG, rủi ro khí hậu và chuỗi cung ứng", "Cam kết khung quốc tế (UN Global Compact, SBTi...)"] },
-  { code: "C3", title: "Đánh giá Trọng yếu (Materiality)", gri: "GRI 3-1, 3-2", items: ["Phương pháp đánh giá trọng yếu (tác động; trọng yếu kép đánh giá tài chính riêng)", "Danh sách chủ đề trọng yếu đã xác định", "Ma trận trọng yếu và liên kết SDGs"] },
-  { code: "C4", title: "Môi trường (Environmental)", gri: "GRI 300s; SASB Footwear", items: ["Phát thải KNK Scope 1, 2, 3: mục tiêu, kết quả, năm cơ sở", "Năng lượng: tiêu thụ, tái tạo, cường độ", "Nguyên vật liệu, chất thải & kinh tế tuần hoàn"] },
-  { code: "C5", title: "Xã hội – Người lao động", gri: "GRI 400s", items: ["Hồ sơ lực lượng lao động, đào tạo, phúc lợi & DEI", "An toàn & sức khỏe nghề nghiệp (ISO 45001, TRIR)"] },
-  { code: "C6", title: "Xã hội – Chuỗi cung ứng & Cộng đồng", gri: "GRI 408, 409, 414 (tùy chủ đề)", items: ["Thu mua có trách nhiệm, đánh giá nhà cung cấp", "Chống lao động cưỡng bức / lao động trẻ em", "Đóng góp cộng đồng"] },
-  { code: "C7", title: "Trách nhiệm Sản phẩm", gri: "SASB CG-AA", items: ["Chất lượng & an toàn sản phẩm", "Hóa chất trong sản phẩm (RSL/MRSL), nhãn sinh thái"] },
-  { code: "C8", title: "Kết quả & Mục tiêu tổng hợp (Scorecard)", gri: "—", items: ["Bảng scorecard: chỉ số – kết quả kỳ này – mục tiêu 2030/2050", "So sánh với năm cơ sở và kỳ trước"] },
-  { code: "C9", title: "Phụ lục & Chỉ số tiêu chuẩn", gri: "GRI Universal", items: ["Phương pháp luận & phạm vi báo cáo (ranh giới, kỳ, năm cơ sở)", "Bảng chỉ số GRI Index", "Liên kết SDGs", "Xác nhận bên thứ ba (assurance, nếu có)"] },
-];

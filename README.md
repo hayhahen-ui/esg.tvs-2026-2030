@@ -2,6 +2,19 @@
 
 Ứng dụng React/TypeScript dành cho doanh nghiệp học ESG, tổ chức công việc, thu thập dữ liệu có bằng chứng và lập báo cáo theo kỳ. Triển khai frontend trên Vercel; Supabase cung cấp đăng nhập, dữ liệu theo doanh nghiệp và phân quyền.
 
+## Audit, báo cáo mẫu và sơ đồ thao tác
+
+Mở trên web sau deployment mới:
+
+- [Audit & Kaizen](https://esg-tvs-2026-2030.vercel.app/#project-audit): phát hiện mã nguồn ZIP, biện pháp cải tiến và các điểm cần làm rõ trong PDF Eclat.
+- [Khung báo cáo ESG](https://esg-tvs-2026-2030.vercel.app/#report-kit): 19 phần, trách nhiệm, bằng chứng, checklist và chỉ mục GRI.
+- [Báo cáo tham chiếu](https://esg-tvs-2026-2030.vercel.app/#report-example): mặc định là mẫu tiếng Việt bám Eclat 2024, 21 phần và 25 KPI có trang nguồn. Nút riêng mở mẫu giả định 20 chương để luyện nhập liệu.
+- [Hướng dẫn & sơ đồ](https://esg-tvs-2026-2030.vercel.app/#guide): mindmap sáu nhóm công việc, lưu trình tám bước, hướng dẫn theo vai trò và đường trả sửa.
+
+Các tài liệu đọc trên web, tải Markdown/HTML, in PDF; KPI mẫu tải Excel và mindmap tải SVG. Số liệu Eclat và giả định chỉ để tham khảo, không được tự nhập vào dữ liệu của doanh nghiệp. Màn Nhật ký thay đổi vẫn ghi thao tác; báo cáo audit có mục menu riêng.
+
+Tài liệu nguồn trong GitHub: [khung](docs/ESG_REPORT_OUTLINE.md), [mẫu Eclat](docs/ESG_REPORT_ECLAT_REFERENCE.md), [sổ trích nguồn](docs/eclat-source-register.json), [mẫu giả định](docs/ESG_REPORT_EXAMPLE.md), [hướng dẫn](docs/WORKFLOW_GUIDE.md). Mẫu bám PDF người dùng cung cấp, giữ phạm vi và các chênh lệch trong báo cáo; không chuyển assurance của Eclat thành xác nhận cho hệ thống hoặc doanh nghiệp khác.
+
 ## Chạy trên máy phát triển
 
 Yêu cầu Node.js 24 và npm. Dùng checkout hiện tại; mỗi tác vụ Codex đã có môi trường riêng, không cần tạo Git worktree.
@@ -42,9 +55,9 @@ Chưa cấu hình Supabase thì deployment chỉ cung cấp sandbox. Tạo dự 
 
 Xem [audit và kế hoạch kaizen](docs/AUDIT.md), [quy tắc chất lượng dữ liệu](docs/DATA_QUALITY.md) và [kết quả xác minh](docs/VALIDATION.md). Inventory ZIP gốc: [archive-inventory.json](docs/archive-inventory.json).
 
-## Tài liệu báo cáo và hướng dẫn vận hành
+## Chatbot hỏi đáp AI
 
-- [Khung sườn báo cáo ESG chuẩn hoàn chỉnh](docs/khung-suon-bao-cao-esg.md) — cấu trúc 9 chương tổng hợp từ 5 báo cáo thực tế (Dunlop, Yue Yuen, Fulgent Sun, Rocky Brands, Eclat Textile 2024), checklist nội dung từng chương, ánh xạ GRI và nguồn dữ liệu trên app.
-- [Báo cáo ESG mẫu hoàn chỉnh](docs/bao-cao-mau-esg.md) — mẫu tham chiếu đã điền đầy đủ (⚠️ mọi số liệu đều hư cấu minh họa, không phải số liệu thật).
-- Sơ đồ vận hành cho nhân viên: mở nút **"🗺️ Sơ đồ vận hành"** trên màn Tổng quan, hoặc file `public/so-do-van-hanh.html` (được serve tại `/so-do-van-hanh.html` sau khi deploy).
-- Báo cáo mẫu hoàn chỉnh: nút **"📄 Báo cáo mẫu"** trên màn Tổng quan, hoặc file `public/bao-cao-mau.html` (`/bao-cao-mau.html` sau khi deploy).
+Màn **Hỏi đáp** có khung **"💬 Trợ lý AI hỏi đáp nhanh"**: trả lời từ thư viện nội bộ trước,
+nút **"🔍 Tìm trên web"** (TinyFish Search) và **"✨ Diễn giải bằng AI"** (model tùy chọn,
+mặc định Claude Haiku 5.5) khi cần. Màn **Cài đặt API** cho phép nhập key, chọn/thêm model
+và kiểm tra kết nối ngay trên trình duyệt. Chi tiết: [docs/CHATBOT_AI.md](docs/CHATBOT_AI.md).

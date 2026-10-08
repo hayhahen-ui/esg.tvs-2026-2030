@@ -1,13 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, api, useAppSession, type Doc } from "./data";
 import { WorkspacePanel } from "./WorkspacePanel";
 import { CrudScreen, ImportExportBar, type Col, type AnyRow, type CrudFns } from "./crud";
-import { ARTICLES, CATEGORIES, CHECKLIST, DEPARTMENTS, QUICK_QUESTIONS, REPORT_OUTLINE } from "./content";
+import { ARTICLES, CATEGORIES, CHECKLIST, DEPARTMENTS, QUICK_QUESTIONS } from "./content";
 import { downloadXlsx } from "./xlsx";
 import { aggregateRecords, reportReadiness, periodContains } from "./esg";
 import EvidenceScreen from "./EvidenceScreen";
 import AiChat from "./AiChat";
 import ApiKeysScreen from "./ApiKeysScreen";
+const ReportLibrary = lazy(() => import("./ReportLibrary"));
+const WorkflowGuide = lazy(() => import("./WorkflowGuide"));
 
 const DEPT_OPTS = DEPARTMENTS.map((d) => ({ value: d, label: d }));
 const STATUS_DATA = [{ value: "measured", label: "Đo/ghi thực" }, { value: "estimated", label: "Ước tính" }, { value: "missing", label: "Thiếu" }, { value: "na", label: "Không áp dụng" }];
@@ -91,7 +93,8 @@ function Dashboard({ canWrite, go }: { canWrite: boolean; go: (s: string) => voi
   return (
     <section className="screen">
       <header className="screen-head"><div><h2>Tổng quan</h2><p className="text-secondary">Cùng học, xây dựng hệ thống, giao việc, thu nhận bằng chứng và lập báo cáo ESG cho doanh nghiệp giày & rubber boots. Kết quả cần được soát xét theo phạm vi và yêu cầu áp dụng; ứng dụng không cấp chứng nhận.</p></div>
-        <div className="row wrap gap"><button className="button" onClick={() => window.open("so-do-van-hanh.html", "_blank", "noopener")}>🗺️ Sơ đồ vận hành</button><button className="button" onClick={() => window.open("bao-cao-mau.html", "_blank", "noopener")}>📄 Báo cáo mẫu</button><button className="button" disabled={!backup} onClick={exportAll}>Xuất toàn bộ Excel</button><button className="button" disabled={!backup} onClick={exportJson}>Sao lưu JSON đầy đủ</button></div></header>
+        <div className="row wrap gap"><button className="button" disabled={!backup} onClick={exportAll}>Xuất toàn bộ Excel</button><button className="button" disabled={!backup} onClick={exportJson}>Sao lưu JSON đầy đủ</button></div></header>
+      <div className="card resource-launcher"><h3>Tài liệu và hướng dẫn thực hành</h3><p className="text-secondary">Báo cáo audit dự án, khung biên soạn, mẫu tham chiếu và đường đi cho từng vai trò.</p><div className="row wrap gap"><button className="button" onClick={() => go("project-audit")}>Đọc Audit & Kaizen</button><button className="button" onClick={() => go("report-kit")}>Mở khung báo cáo ESG</button><button className="button" onClick={() => go("report-example")}>Đọc báo cáo tham chiếu</button><button className="button button-primary" onClick={() => go("guide")}>Xem sơ đồ thao tác</button></div></div>
       {exportErr && <p className="error-text" role="alert">{exportErr}</p>}
       {empty && canWrite && (
         <div className="card callout"><div><strong>Bắt đầu nhanh.</strong> Nạp bộ mẫu đề xuất từ Kế hoạch ESG 2026–2030: 24 KPI, 65 đầu việc cho 13 bộ phận, 17 quý lộ trình, 10 chủ đề trọng yếu, 21 yêu cầu. Không có số liệu thực tế để tránh lẫn với dữ liệu nhà máy.</div>
@@ -328,33 +331,15 @@ function GhgScreen({ canWrite }: { canWrite: boolean }) {
   </section>;
 }
 
-function ReportsScreen({ canWrite }: { canWrite: boolean }) {
+function ReportsScreen({ canWrite, go }: { canWrite: boolean; go: (route: string) => void }) {
   const session = useAppSession();
   const canReview = Boolean(session.capabilities.review || session.capabilities.admin);
   const [period, setPeriod] = useState(thisPeriod()); const [selectedReport, setSelectedReport] = useState("");
   const publish = useMutation(api.app.upsertReport);
   const [publishBusy, setPublishBusy] = useState(false); const [publishError, setPublishError] = useState("");
-  const [tplBusy, setTplBusy] = useState(false); const [tplMsg, setTplMsg] = useState("");
-  const templateCode = `BC-${new Date().getFullYear()}-KHUNG`;
-  const loadTemplate = async () => {
-    setTplBusy(true); setTplMsg("");
-    try {
-      const outline = REPORT_OUTLINE.map((c) => `${c.code}. ${c.title} [${c.gri}]\n${c.items.map((i) => `   • ${i}`).join("\n")}`).join("\n\n");
-      await publish({ data: {
-        code: templateCode, title: "Khung báo cáo ESG chuẩn ngành giày (9 chương)", type: "annual",
-        period: String(new Date().getFullYear()), status: "draft",
-        summary: `Khung 9 chương tổng hợp từ báo cáo ESG thực tế của 5 doanh nghiệp (Dunlop Protective Footwear, Yue Yuen, Fulgent Sun, Rocky Brands — ngành giày; Eclat Textile 2024 — có kiểm toán độc lập). Điền nội dung từng chương vào các mục bên dưới; nguyên tắc: chỉ công bố điều chứng minh được bằng dữ liệu.\n\n${outline}`,
-        kpiSummary: "", comparison: "", risks: "", missingData: "", projects: "", decisions: "",
-        preparedBy: "", approvedBy: "", publishedAt: "",
-      } });
-      setTplMsg(`Đã nạp khung báo cáo chuẩn (mã ${templateCode}). Mở báo cáo này để điền nội dung từng chương.`);
-    } catch (e) { setTplMsg(e instanceof Error ? e.message : "Không nạp được khung báo cáo"); }
-    finally { setTplBusy(false); }
-  };
   const records = useQuery(api.app.listDataRecords) as Doc<"dataRecords">[] | undefined;
   const kpis = useQuery(api.app.listKpis) as Doc<"kpis">[] | undefined;
   const reports = useQuery(api.app.listReports) as Doc<"reports">[] | undefined;
-  const hasTemplate = (reports ?? []).some((r) => r.code === templateCode);
   const periodRecords = (records ?? []).filter((row) => periodMatches(row.period, period));
   const cols: Col[] = [{ key: "code", label: "Mã báo cáo", required: true, help: "VD BC-2026-10" }, { key: "title", label: "Tiêu đề", required: true }, { key: "type", label: "Loại", type: "select", options: REPORT_TYPE, filter: true }, { key: "period", label: "Kỳ", required: true, help: "Tháng YYYY-MM; quý YYYY-Q1..Q4; năm YYYY." }, { key: "status", label: "Trạng thái", type: "select", options: REPORT_STATUS.filter((status) => status.value === "draft" || status.value === "review"), filter: true },
     { key: "summary", label: "Tóm tắt điều hành", type: "textarea" }, { key: "kpiSummary", label: "KPI kỳ này và lũy kế", type: "textarea", table: false }, { key: "comparison", label: "So với mục tiêu / năm cơ sở", type: "textarea", table: false }, { key: "risks", label: "Rủi ro và CAPA quá hạn", type: "textarea", table: false }, { key: "missingData", label: "Dữ liệu thiếu / ước tính / loại trừ", type: "textarea", table: false }, { key: "projects", label: "Dự án và chi phí", type: "textarea", table: false }, { key: "decisions", label: "Quyết định cần BGĐ", type: "textarea", table: false }, { key: "preparedBy", label: "Người lập (hệ thống)", readonly: true }, { key: "approvedBy", label: "Người duyệt (hệ thống)", readonly: true }, { key: "publishedAt", label: "Ngày phát hành", type: "date", readonly: true }];
@@ -383,10 +368,10 @@ function ReportsScreen({ canWrite }: { canWrite: boolean }) {
     ]);
   };
   return <section className="screen">
+    <div className="card resource-launcher"><h2>Tài liệu biên soạn báo cáo</h2><p className="text-secondary">Hoàn thiện nội dung theo khung bên cạnh số liệu được chốt ở màn hình này.</p><div className="row wrap gap"><button className="button" onClick={() => go("report-kit")}>Khung báo cáo ESG</button><button className="button" onClick={() => go("report-example")}>Báo cáo tham chiếu</button><button className="button" onClick={() => go("guide")}>Hướng dẫn & sơ đồ</button></div></div>
     <div className="report-registry"><CrudScreen key="reports" title="Ghi nhận báo cáo" intro="Lập dự thảo, ghi rõ dữ liệu thiếu và phương pháp. Người soát xét duyệt / phát hành sau khi dữ liệu được duyệt và kỳ được khóa. Dịch vụ dữ liệu chốt phiên bản số liệu; bản đã duyệt / phát hành không bị thay đổi theo dữ liệu nhập sau." cols={cols} fns={F.reports} fileName="Bao_cao_ESG" canWrite={canWrite} defaults={{ type: "monthly", period: thisPeriod(), status: "draft" }} /></div>
     {publishError && <p className="error-text" role="alert">{publishError}</p>}
-    <div className="card report-document"><div className="row between wrap gap"><h3>{report ? `${report.code} – ${report.title}` : "Số liệu phục vụ báo cáo"}</h3><div className="row wrap gap"><label className="field"><span className="text-small">Kỳ báo cáo</span><input className="input" value={period} onChange={(e) => { setPeriod(e.target.value); setSelectedReport(""); }} placeholder="YYYY-MM / YYYY-Q1 / YYYY" /></label>{candidates.length > 0 && <label className="field"><span className="text-small">Báo cáo để xuất</span><select className="input" value={report?._id ?? ""} onChange={(e) => setSelectedReport(e.target.value)}>{candidates.map((item) => <option key={item._id} value={item._id}>{item.code} – {item.title}</option>)}</select></label>}{canReview && report && (report.status === "draft" || report.status === "review") && <button className="button button-primary" disabled={publishBusy || !readiness.ready} onClick={() => changeReportStatus("approved")}>{publishBusy ? "Đang duyệt…" : "Duyệt & chốt báo cáo"}</button>}{canReview && report?.status === "approved" && <button className="button button-primary" disabled={publishBusy} onClick={() => changeReportStatus("published")}>{publishBusy ? "Đang phát hành…" : "Phát hành bản đã duyệt"}</button>}<button className="button" onClick={() => window.print()}>In / lưu PDF</button><button className="button" disabled={records === undefined || kpis === undefined} onClick={exportSnapshot}>Xuất {report?.snapshot ? "bản đã chốt" : "dự thảo kỳ"} (.xlsx)</button>{canWrite && <button className="button" disabled={tplBusy || hasTemplate} onClick={loadTemplate}>{tplBusy ? "Đang nạp…" : hasTemplate ? "Đã có khung báo cáo chuẩn" : "Nạp khung báo cáo chuẩn (9 chương)"}</button>}</div></div>
-      {tplMsg && <p className="text-small text-secondary" role="status">{tplMsg}</p>}
+    <div className="card report-document"><div className="row between wrap gap"><h3>{report ? `${report.code} – ${report.title}` : "Số liệu phục vụ báo cáo"}</h3><div className="row wrap gap"><label className="field"><span className="text-small">Kỳ báo cáo</span><input className="input" value={period} onChange={(e) => { setPeriod(e.target.value); setSelectedReport(""); }} placeholder="YYYY-MM / YYYY-Q1 / YYYY" /></label>{candidates.length > 0 && <label className="field"><span className="text-small">Báo cáo để xuất</span><select className="input" value={report?._id ?? ""} onChange={(e) => setSelectedReport(e.target.value)}>{candidates.map((item) => <option key={item._id} value={item._id}>{item.code} – {item.title}</option>)}</select></label>}{canReview && report && (report.status === "draft" || report.status === "review") && <button className="button button-primary" disabled={publishBusy || !readiness.ready} onClick={() => changeReportStatus("approved")}>{publishBusy ? "Đang duyệt…" : "Duyệt & chốt báo cáo"}</button>}{canReview && report?.status === "approved" && <button className="button button-primary" disabled={publishBusy} onClick={() => changeReportStatus("published")}>{publishBusy ? "Đang phát hành…" : "Phát hành bản đã duyệt"}</button>}<button className="button" onClick={() => window.print()}>In / lưu PDF</button><button className="button" disabled={records === undefined || kpis === undefined} onClick={exportSnapshot}>Xuất {report?.snapshot ? "bản đã chốt" : "dự thảo kỳ"} (.xlsx)</button></div></div>
       <p className="report-period">Kỳ {period}{report ? ` · ${REPORT_STATUS.find((item) => item.value === report.status)?.label ?? report.status}` : " · Dự thảo số liệu"}</p>
       {report && <div className="report-narrative">{cols.filter((col) => col.type === "textarea").map((col) => { const text = String((report as Record<string, unknown>)[col.key] ?? ""); return text ? <section key={col.key}><h4>{col.label}</h4><p>{text}</p></section> : null; })}</div>}
       <p className="text-small text-secondary">Số liệu chính thức chỉ gồm bản ghi đã duyệt và khóa. Tỷ lệ dùng tổng tử / mẫu; đơn vị không đồng nhất và KPI chỉ thuyết minh không tạo tổng.</p>
@@ -433,7 +418,7 @@ function CapaScreen({ canWrite }: { canWrite: boolean }) {
   );
 }
 
-function AuditScreen() {
+function AuditScreen({ go }: { go: (route: string) => void }) {
   const rows = useQuery(api.app.listAudit) as Record<string, unknown>[] | undefined;
   const backup = useQuery(api.app.exportWorkspace);
   const [filter, setFilter] = useState("");
@@ -441,6 +426,7 @@ function AuditScreen() {
   const value = (row: Record<string, unknown>, fields: string[]) => fields.map((field) => row[field]).find((item) => item !== undefined && item !== null) ?? "";
   return <section className="screen">
     <header className="screen-head"><div><h2>Nhật ký thay đổi</h2><p className="text-secondary">Theo dõi ai nhập, sửa, soát xét, khóa hoặc mở lại kỳ. Nhật ký trong khu vực thử nghiệm lưu cùng dữ liệu của trình duyệt.</p></div><button className="button" disabled={!backup} onClick={() => downloadJson(`ESG_Hub_backup_${thisPeriod()}`, backup)}>Sao lưu JSON toàn bộ</button></header>
+    <div className="card callout"><div><strong>Báo cáo audit dự án ở mục Audit & Kaizen.</strong><p>Nhật ký bên dưới ghi thao tác dữ liệu. Xem phát hiện, biện pháp cải tiến và phần còn cần triển khai trong báo cáo audit.</p></div><button className="button button-primary" onClick={() => go("project-audit")}>Xem báo cáo Audit & Kaizen</button></div>
     <label className="field"><span className="text-label">Tìm trong nhật ký</span><input className="input" value={filter} onChange={(event) => setFilter(event.target.value)} placeholder="Người thực hiện, mã bản ghi hoặc hành động" /></label>
     {rows === undefined ? <div className="card empty">Đang tải nhật ký…</div> : !visible.length ? <div className="card empty">Chưa có thay đổi phù hợp.</div> : <div className="card table-wrap"><table className="tbl"><caption className="sr-only">Nhật ký thay đổi dữ liệu ESG</caption><thead><tr><th scope="col">Thời điểm</th><th scope="col">Người thực hiện</th><th scope="col">Hành động</th><th scope="col">Đối tượng</th><th scope="col">Chi tiết</th></tr></thead><tbody>{visible.map((row, index) => {
       const timestamp = value(row, ["createdAt", "timestamp", "_creationTime", "at"]);
@@ -451,8 +437,8 @@ function AuditScreen() {
 }
 
 const NAV = [
-  ["home", "Tổng quan"], ["qa", "Hỏi đáp"], ["learn", "Học hỏi & tìm kiếm"], ["assess", "Đánh giá sẵn sàng"], ["roadmap", "Lộ trình & giao việc"],
-  ["topics", "Chủ đề trọng yếu"], ["evidence", "Sổ bằng chứng"], ["data", "Thu thập dữ liệu"], ["ghg", "Kiểm kê KNK"], ["reports", "Báo cáo"], ["capa", "CAPA & yêu cầu"], ["audit", "Nhật ký thay đổi"], ["apikeys", "Cài đặt API"],
+  ["home", "Tổng quan"], ["guide", "Hướng dẫn & sơ đồ"], ["project-audit", "Audit & Kaizen"], ["qa", "Hỏi đáp"], ["learn", "Học hỏi & tìm kiếm"], ["assess", "Đánh giá sẵn sàng"], ["roadmap", "Lộ trình & giao việc"],
+  ["topics", "Chủ đề trọng yếu"], ["evidence", "Sổ bằng chứng"], ["data", "Thu thập dữ liệu"], ["ghg", "Kiểm kê KNK"], ["reports", "Báo cáo"], ["report-kit", "Khung báo cáo ESG"], ["report-example", "Báo cáo tham chiếu"], ["capa", "CAPA & yêu cầu"], ["audit", "Nhật ký thay đổi"], ["apikeys", "Cài đặt API"],
 ] as const;
 
 export default function App() {
@@ -481,6 +467,8 @@ export default function App() {
         {session.mode === "sandbox" && <div className="card sandbox-banner" role="status"><strong>Khu vực thử nghiệm trên trình duyệt</strong><p>Chỉ dùng dữ liệu mẫu. Dữ liệu lưu trên thiết bị này để bạn thử quy trình. Đây chưa phải kho dữ liệu doanh nghiệp dùng chung. Kết nối dịch vụ dữ liệu và đăng nhập để cộng tác trực tuyến; xuất bản sao JSON trước khi xóa dữ liệu trình duyệt.</p></div>}
         {session.error && <p className="card error-text" role="alert">{session.error}</p>}
         {screen === "home" && <Dashboard canWrite={canWrite} go={go} />}
+        {screen === "guide" && <Suspense fallback={<p role="status">Đang tải hướng dẫn…</p>}><WorkflowGuide go={go} /></Suspense>}
+        {["project-audit", "report-kit", "report-example"].includes(screen) && <Suspense fallback={<p role="status">Đang tải tài liệu…</p>}><ReportLibrary key={screen} kind={screen} go={go} /></Suspense>}
         {screen === "qa" && <QAScreen canWrite={canWrite} />}
         {screen === "learn" && <LearnScreen canWrite={canWrite} />}
         {screen === "assess" && <AssessScreen canWrite={canWrite} />}
@@ -489,9 +477,9 @@ export default function App() {
         {screen === "evidence" && <EvidenceScreen canWrite={canWrite} />}
         {screen === "data" && <DataScreen canWrite={canWrite} />}
         {screen === "ghg" && <GhgScreen canWrite={canWrite} />}
-        {screen === "reports" && <ReportsScreen canWrite={canWrite} />}
+        {screen === "reports" && <ReportsScreen canWrite={canWrite} go={go} />}
         {screen === "capa" && <CapaScreen canWrite={canWrite} />}
-        {screen === "audit" && <AuditScreen />}
+        {screen === "audit" && <AuditScreen go={go} />}
         {screen === "apikeys" && <ApiKeysScreen />}
       </main>
     </div>
