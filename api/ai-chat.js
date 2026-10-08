@@ -40,7 +40,8 @@ async function doChat(key, model, messages, maxTokens, timeoutMs) {
     const upstream = await fetch("https://api.experientiallabs.ai/v1/chat/completions", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-      body: JSON.stringify({ model, messages, temperature: 0.3, max_tokens: maxTokens }),
+      // LƯU Ý: model claude-haiku-5.5 qua route này chỉ hỗ trợ temperature=1.0 → không gửi temperature.
+      body: JSON.stringify({ model, messages, max_tokens: maxTokens }),
       signal: controller.signal,
     });
     if (!upstream.ok) return { ok: false, status: upstream.status };
