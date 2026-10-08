@@ -1,15 +1,16 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ARTICLES, QUICK_QUESTIONS } from "./content";
-import { AI_DISCLAIMER, type WebResult } from "./ai";
+import { AI_DISCLAIMER, AI_GENERATED_DISCLAIMER, DEFAULT_AI_MODEL, type ChatModel, type WebResult } from "./ai";
 
 interface ArticleLike { id: string; title: string; summary: string; content: string; category: string; source: string }
 interface ChatMsg {
   id: number;
   role: "user" | "bot";
   text: string;
-  tag?: "local" | "web" | "info";
+  tag?: "local" | "web" | "ai" | "info";
   results?: WebResult[];
   webQuery?: string;
+  aiContext?: string;
 }
 
 let nextId = 1;
@@ -23,12 +24,26 @@ export default function AiChat({ knowledge }: {
   ], [knowledge]);
   const [msgs, setMsgs] = useState<ChatMsg[]>([{
     id: nextId++, role: "bot", tag: "info",
-    text: "Chào bạn! Tôi trả lời nhanh từ thư viện ESG nội bộ. Với câu hỏi thư viện chưa có, bạn có thể bấm “🔍 Tìm trên web” để tôi tra cứu thêm. Câu trả lời từ web cần chuyên gia soát xét trước khi áp dụng.",
+    text: "Chào bạn! Tôi trả lời nhanh từ thư viện ESG nội bộ. Với câu hỏi thư viện chưa có, bạn có thể bấm “🔍 Tìm trên web”. Muốn câu trả lời diễn giải tự nhiên, bấm “✨ Diễn giải bằng AI”.",
   }]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [webBusyId, setWebBusyId] = useState<number | null>(null);
+  const [aiBusyId, setAiBusyId] = useState<number | null>(null);
+  const [models, setModels] = useState<ChatModel[]>([]);
+  const [aiReady, setAiReady] = useState(false);
+  const [model, setModel] = useState<string>(DEFAULT_AI_MODEL);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetch("/api/ai-chat").then((r) => r.json()).then((d: { configured?: boolean; models?: ChatModel[]; defaultModel?: string }) => {
+      if (d.configured) {
+        setAiReady(true);
+        if (Array.isArray(d.models) && d.models.length) setModels(d.models);
+        if (d.defaultModel) setModel(d.defaultModel);
+      }
+    }).catch(() => { /* AI không bắt buộc */ });
+  }, []);
 
   const scrollDown = () => setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }), 50);
 
@@ -52,10 +67,11 @@ export default function AiChat({ knowledge }: {
     const botMsg: ChatMsg = hits.length
       ? {
           id: nextId++, role: "bot", tag: "local", webQuery: text,
+          aiContext: hits.map((h) => `${h.title}: ${h.summary}`).join("\n"),
           text: `Tìm thấy ${hits.length} tài liệu liên quan trong thư viện nội bộ:\n\n${hits.map((h, i) => `${i + 1}. ${h.title} — ${h.summary}\n   Nguồn: ${h.source}`).join("\n\n")}`,
         }
       : {
-          id: nextId++, role: "bot", tag: "info", webQuery: text,
+          id: nextId++, role: "bot", tag: "info", webQuery: text, aiContext: "",
           text: "Thư viện nội bộ chưa có tài liệu phù hợp. Bạn có thể bấm “🔍 Tìm trên web” để tôi tra cứu thêm, hoặc gửi câu hỏi cho chuyên gia ở ô bên dưới.",
         };
     setMsgs((m) => [...m, userMsg, botMsg]);
@@ -74,7 +90,7 @@ export default function AiChat({ knowledge }: {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query }),
       });
-      const data = await r.json().catch(() => ({})) as { results?: WebResult[]; message?: string };
+      const data = await r.json().catch(() => ({})) as { results?: WebResult[] };
       if (r.status === 501) {
         setMsgs((m) => [...m, {
           id: nextId++, role: "bot", tag: "info",
@@ -85,7 +101,12 @@ export default function AiChat({ knowledge }: {
       } else if (!data.results?.length) {
         setMsgs((m) => [...m, { id: nextId++, role: "bot", tag: "info", text: "Không tìm thấy kết quả web phù hợp. Bạn gửi câu hỏi cho chuyên gia ở ô bên dưới nhé." }]);
       } else {
-        setMsgs((m) => [...m, { id: nextId++, role: "bot", tag: "web", text: `Tìm thấy ${data.results!.length} kết quả trên web cho “${query}”:`, results: data.results }]);
+        setMsgs((m) => [...m, {
+          id: nextId++, role: "bot", tag: "web", webQuery: query,
+          text: `Tìm thấy ${data.results!.length} kết quả trên web cho “${query}”:`,
+          results: data.results,
+          aiContext: data.results!.map((x) => `${x.title}: ${x.snippet} (${x.url})`).join("\n"),
+        }]);
       }
     } catch {
       setMsgs((m) => [...m, { id: nextId++, role: "bot", tag: "info", text: "Không kết nối được dịch vụ tìm kiếm, bạn thử lại sau." }]);
@@ -95,17 +116,57 @@ export default function AiChat({ knowledge }: {
     }
   };
 
+  const askAi = async (msg: ChatMsg) => {
+    const question = msg.webQuery ?? "";
+    if (!question || aiBusyId !== null) return;
+    setAiBusyId(msg.id);
+    try {
+      const r = await fetch("/api/ai-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question, model, context: msg.aiContext ?? "" }),
+      });
+      const data = await r.json().catch(() => ({})) as { reply?: string; message?: string };
+      if (r.status === 501) {
+        setMsgs((m) => [...m, {
+          id: nextId++, role: "bot", tag: "info",
+          text: "Chưa đấu nối AI. Quản trị viên cần thêm biến môi trường EXPLABS_API_KEY trên Vercel (xem docs/CHATBOT_AI.md), sau đó deploy lại.",
+        }]);
+      } else if (!r.ok || !data.reply) {
+        setMsgs((m) => [...m, { id: nextId++, role: "bot", tag: "info", text: "AI tạm thời không trả lời được, bạn thử lại sau ít phút." }]);
+      } else {
+        setMsgs((m) => [...m, { id: nextId++, role: "bot", tag: "ai", text: data.reply! }]);
+      }
+    } catch {
+      setMsgs((m) => [...m, { id: nextId++, role: "bot", tag: "info", text: "Không kết nối được dịch vụ AI, bạn thử lại sau." }]);
+    } finally {
+      setAiBusyId(null);
+      scrollDown();
+    }
+  };
+
   return (
     <div className="card">
-      <h3 style={{ margin: "0 0 4px" }}>💬 Trợ lý AI hỏi đáp nhanh</h3>
+      <div className="row between wrap" style={{ marginBottom: 4 }}>
+        <h3 style={{ margin: 0 }}>💬 Trợ lý AI hỏi đáp nhanh</h3>
+        {aiReady && models.length > 0 && (
+          <label className="field" style={{ minWidth: 220 }}>
+            <span className="text-small">Model AI</span>
+            <select className="input" value={model} onChange={(e) => setModel(e.target.value)} aria-label="Chọn model AI">
+              {models.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
+            </select>
+          </label>
+        )}
+      </div>
       <p className="text-small text-secondary" style={{ margin: "0 0 12px" }}>
-        Trả lời từ thư viện nội bộ trước; tra cứu web khi cần. Không thay thế chuyên gia và quy định pháp luật.
+        Trả lời từ thư viện nội bộ trước; tra cứu web và diễn giải AI khi cần. Không thay thế chuyên gia và quy định pháp luật.
       </p>
       <div className="chat-thread" role="log" aria-label="Hội thoại trợ lý AI">
         {msgs.map((m) => (
           <div key={m.id} className={`chat-msg ${m.role}`}>
             {m.role === "bot" && m.tag === "local" && <span className="src-tag">📚 Thư viện nội bộ</span>}
             {m.role === "bot" && m.tag === "web" && <span className="src-tag">🌐 Kết quả web (TinyFish)</span>}
+            {m.role === "bot" && m.tag === "ai" && <span className="src-tag">✨ AI diễn giải</span>}
             <div style={{ whiteSpace: "pre-wrap" }}>{m.text}</div>
             {m.results && (
               <ul className="web-results">
@@ -118,11 +179,19 @@ export default function AiChat({ knowledge }: {
               </ul>
             )}
             {m.tag === "web" && <div className="disclaimer">⚠️ {AI_DISCLAIMER}</div>}
-            {m.role === "bot" && m.webQuery && m.tag !== "web" && (
-              <div style={{ marginTop: 8 }}>
-                <button className="button" disabled={webBusyId !== null} onClick={() => searchWeb(m)}>
-                  {webBusyId === m.id ? "Đang tìm…" : "🔍 Tìm trên web"}
-                </button>
+            {m.tag === "ai" && <div className="disclaimer">⚠️ {AI_GENERATED_DISCLAIMER}</div>}
+            {m.role === "bot" && m.webQuery && (m.tag === "local" || m.tag === "info" || m.tag === "web") && (
+              <div className="row wrap gap" style={{ marginTop: 8 }}>
+                {m.tag !== "web" && (
+                  <button className="button" disabled={webBusyId !== null} onClick={() => searchWeb(m)}>
+                    {webBusyId === m.id ? "Đang tìm…" : "🔍 Tìm trên web"}
+                  </button>
+                )}
+                {aiReady && (
+                  <button className="button" disabled={aiBusyId !== null} onClick={() => askAi(m)}>
+                    {aiBusyId === m.id ? "AI đang trả lời…" : "✨ Diễn giải bằng AI"}
+                  </button>
+                )}
               </div>
             )}
           </div>

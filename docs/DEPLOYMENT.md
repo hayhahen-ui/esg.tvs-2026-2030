@@ -19,6 +19,7 @@
 | `VITE_SUPABASE_URL` | URL HTTPS của project Supabase |
 | `VITE_SUPABASE_ANON_KEY` | khóa anon/public của cùng project |
 | `TINYFISH_API_KEY` | *(tùy chọn)* key TinyFish Search cho chatbot "Tìm trên web" — server-side, không có tiền tố `VITE_` |
+| `EXPLABS_API_KEY` | *(tùy chọn)* key Experiential Labs cho chatbot "Diễn giải bằng AI" (model Claude Haiku 5.5) — server-side, không có tiền tố `VITE_` |
 
 4. Chọn môi trường Production; cấu hình Preview chỉ với backend thử nghiệm phù hợp. Giá trị `VITE_*` được nhúng lúc build nên cần Redeploy sau khi thay đổi.
 5. Deploy. Trong Git settings chọn Production Branch = `main`, bật deployment cho push. Vercel tự nhận commit mới thông qua Git integration; không cần đưa Vercel token vào repo.

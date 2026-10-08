@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { AI_DISCLAIMER, normalizeTinyfishResults } from "../src/ai";
+import {
+  AI_DISCLAIMER, AI_GENERATED_DISCLAIMER, AI_MODELS, AI_SYSTEM_PROMPT,
+  DEFAULT_AI_MODEL, buildChatMessages, isAllowedModel, normalizeTinyfishResults,
+} from "../src/ai";
 
 describe("normalizeTinyfishResults", () => {
   it("trích results dạng chuẩn", () => {
@@ -23,5 +26,35 @@ describe("normalizeTinyfishResults", () => {
   });
   it("có câu miễn trừ trách nhiệm cho kết quả web", () => {
     expect(AI_DISCLAIMER).toContain("soát xét");
+  });
+});
+
+describe("AI model allowlist", () => {
+  it("chỉ cho phép model trong danh sách", () => {
+    expect(isAllowedModel("claude-haiku-5.5")).toBe(true);
+    expect(isAllowedModel("gpt-4")).toBe(false);
+    expect(isAllowedModel("")).toBe(false);
+  });
+  it("model mặc định nằm trong danh sách", () => {
+    expect(AI_MODELS.length).toBeGreaterThan(0);
+    expect(isAllowedModel(DEFAULT_AI_MODEL)).toBe(true);
+  });
+});
+
+describe("buildChatMessages", () => {
+  it("ghép system prompt + ngữ cảnh + câu hỏi", () => {
+    const msgs = buildChatMessages("scope 3 là gì?", "Scope 3: phát thải gián tiếp chuỗi giá trị.");
+    expect(msgs[0]).toEqual({ role: "system", content: AI_SYSTEM_PROMPT });
+    expect(msgs[1].role).toBe("user");
+    expect(msgs[1].content).toContain("scope 3 là gì?");
+    expect(msgs[1].content).toContain("Scope 3: phát thải gián tiếp");
+  });
+  it("chịu được ngữ cảnh rỗng", () => {
+    const msgs = buildChatMessages("xin chào", "");
+    expect(msgs).toHaveLength(2);
+    expect(msgs[1].content).toContain("xin chào");
+  });
+  it("có câu miễn trừ cho nội dung AI tạo", () => {
+    expect(AI_GENERATED_DISCLAIMER).toContain("soát xét");
   });
 });
