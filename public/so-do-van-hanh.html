@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sơ đồ vận hành ESG Hub — Nhân viên</title>
+<style>
+  :root { --bg:#0f172a; --card:#1e293b; --line:#334155; --txt:#e2e8f0; --mut:#94a3b8; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--txt); }
+  header { padding:20px 24px; border-bottom:1px solid var(--line); display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+  header h1 { font-size:20px; margin:0; }
+  header p { margin:4px 0 0; color:var(--mut); font-size:14px; }
+  header .sp { flex:1; }
+  button { background:#2563eb; color:#fff; border:0; border-radius:8px; padding:8px 14px; cursor:pointer; font-size:14px; }
+  button.ghost { background:transparent; border:1px solid var(--line); }
+  main { padding:24px; max-width:1100px; margin:0 auto; }
+  .legend { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px; font-size:13px; color:var(--mut); }
+  .legend span i { display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:6px; vertical-align:-1px; }
+  ul.tree, ul.tree ul { list-style:none; margin:0; padding:0; }
+  ul.tree ul { margin-left:14px; padding-left:18px; border-left:2px solid var(--line); }
+  li.node { margin:10px 0; }
+  .pill { display:inline-flex; align-items:center; gap:8px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 14px; cursor:pointer; }
+  .pill:hover { border-color:#60a5fa; }
+  .pill .n { font-weight:600; }
+  .pill .d { color:var(--mut); font-size:13px; font-weight:400; }
+  .pill .t { font-size:11px; color:var(--mut); border:1px solid var(--line); border-radius:20px; padding:1px 8px; }
+  .pill .caret { color:var(--mut); font-size:12px; width:14px; }
+  li.node.collapsed > ul { display:none; }
+  li.node.leaf > .pill { cursor:default; }
+  li.node.leaf > .pill .caret { visibility:hidden; }
+  .p1 { border-left:4px solid #22c55e; } .p2 { border-left:4px solid #eab308; } .p3 { border-left:4px solid #f97316; }
+  .p4 { border-left:4px solid #3b82f6; } .p5 { border-left:4px solid #a855f7; } .p6 { border-left:4px solid #ef4444; }
+  .p0 { border-left:4px solid #64748b; }
+  footer { padding:16px 24px; color:var(--mut); font-size:12px; border-top:1px solid var(--line); }
+  @media print { body { background:#fff; color:#111; } .pill { background:#f1f5f9; border-color:#cbd5e1; } header button { display:none; } ul.tree ul { border-color:#cbd5e1; } }
+</style>
+</head>
+<body>
+<header>
+  <div><h1>🗺️ Sơ đồ vận hành ESG Hub</h1><p>Nhân viên nhìn vào biết: làm gì → ở màn nào → nhập gì → ai duyệt. Bấm vào từng ô để mở rộng/thu gọn.</p></div>
+  <div class="sp"></div>
+  <button class="ghost" id="expandAll">Mở tất cả</button>
+  <button class="ghost" id="collapseAll">Thu gọn</button>
+  <button onclick="window.print()">In / lưu PDF</button>
+</header>
+<main>
+  <div class="legend">
+    <span><i style="background:#22c55e"></i>Học</span><span><i style="background:#eab308"></i>Đánh giá</span>
+    <span><i style="background:#f97316"></i>Lập kế hoạch</span><span><i style="background:#3b82f6"></i>Nhập liệu</span>
+    <span><i style="background:#a855f7"></i>Kiểm & duyệt</span><span><i style="background:#ef4444"></i>Báo cáo</span>
+  </div>
+  <ul class="tree" id="map"></ul>
+</main>
+<footer>ESG Hub · Mỗi doanh nghiệp có workspace riêng; vai trò: owner / editor / reviewer / viewer. Dữ liệu chưa duyệt + chưa khóa kỳ không được đưa vào báo cáo chính thức.</footer>
+<script>
+const T = (n, d, t, kids) => ({ n, d, t, kids: kids || [] });
+const DATA = T("ESG Hub", "Nền tảng ESG cho nhà máy giày", "trung tâm", [
+  T("1 · HỌC — Hiểu ESG trước khi làm", "Màn: Hỏi đáp · Học hỏi", "p1", [
+    T("Thư viện kiến thức", "Tìm: scope 1/2/3, GRI, năm cơ sở, greenwashing…", "p1"),
+    T("Tài liệu nội bộ", "SOP, hướng dẫn, biểu mẫu của nhà máy", "p1"),
+    T("Hỏi đáp", "Đặt câu hỏi → trả lời từ thư viện / chuyên gia nội bộ", "p1"),
+  ]),
+  T("2 · ĐÁNH GIÁ — Biết mình đang ở đâu", "Màn: Đánh giá sẵn sàng", "p2", [
+    T("25 tiêu chí", "Tự chấm: Đã có / Một phần / Chưa có / Chưa rõ", "p2"),
+    T("Điểm sẵn sàng %", "Thước đo tiến độ, không phải chứng nhận", "p2"),
+  ]),
+  T("3 · LẬP KẾ HOẠCH — Ai làm gì, khi nào", "Màn: Lộ trình & giao việc · Chủ đề · Yêu cầu", "p3", [
+    T("Lộ trình 17 quý (2026–2030)", "Mỗi quý: mốc, chủ trì, tiêu chí nghiệm thu", "p3"),
+    T("Giao việc 65 đầu việc / 13 phòng ban", "Người chính + người thay thế + hạn + bằng chứng", "p3"),
+    T("Chủ đề trọng yếu (GRI 3)", "Chấm 4 thang 0–5, BGĐ phê duyệt", "p3"),
+    T("Sổ yêu cầu", "3 lớp: pháp luật · nhãn hàng · khung tiêu chuẩn", "p3"),
+  ]),
+  T("4 · NHẬP LIỆU — Ghi nhận hằng ngày/tuần/tháng", "Màn: Thu thập dữ liệu · Kiểm kê KNK · Bằng chứng", "p4", [
+    T("Nhật ký dữ liệu", "Kỳ, nguồn/đồng hồ, giá trị, đơn vị, trạng thái: đo thực / ước tính / thiếu", "p4"),
+    T("Từ điển KPI", "Định nghĩa, công thức, chủ dữ liệu, nhịp nộp", "p4"),
+    T("Kiểm kê KNK", "Scope 1/2/3 — tCO₂e = hoạt động × hệ số / 1.000", "p4"),
+    T("Sổ bằng chứng", "Upload file (hóa đơn, ảnh đồng hồ, kiểm nghiệm) + mã bằng chứng", "p4"),
+    T("Nhập / xuất Excel", "Tải mẫu → điền → nhập; xuất để đối chiếu", "p4"),
+  ]),
+  T("5 · KIỂM & DUYỆT — Không ai tự duyệt mình", "Màn: Thu thập dữ liệu · CAPA", "p5", [
+    T("Luồng 3 bước", "Người lập → Người kiểm → Người duyệt (vai trò reviewer)", "p5"),
+    T("CAPA", "Vấn đề → nguyên nhân gốc → hành động → kiểm tra hiệu lực → đóng", "p5"),
+    T("Khóa kỳ", "Sau khi khóa: không sửa/xóa/thêm — muốn sửa phải mở khóa có lý do", "p5"),
+  ]),
+  T("6 · BÁO CÁO — Ra 1 báo cáo đúng duy nhất", "Màn: Báo cáo", "p6", [
+    T("Nạp khung 9 chương chuẩn", "1 bấm → dự thảo theo cấu trúc 5 DN tham chiếu", "p6"),
+    T("Duyệt & chốt snapshot", "Chốt phiên bản dữ liệu — bất biến sau phát hành", "p6"),
+    T("Xuất Excel / In PDF", "Chỉ dùng số liệu đã duyệt + đã khóa kỳ", "p6"),
+    T("Phát hành", "BGĐ duyệt phát hành; lưu lịch sử phiên bản", "p6"),
+  ]),
+]);
+function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+function build(node) {
+  const li = el("li", "node" + (node.kids.length ? "" : " leaf"));
+  const pill = el("div", "pill " + (node.t || "p0"));
+  pill.innerHTML = `<span class="caret">▾</span><span class="n"></span>` +
+    (node.d ? `<span class="d"></span>` : "");
+  pill.querySelector(".n").textContent = node.n;
+  if (node.d) pill.querySelector(".d").textContent = "— " + node.d;
+  pill.onclick = () => li.classList.toggle("collapsed");
+  li.appendChild(pill);
+  if (node.kids.length) {
+    const ul = el("ul");
+    node.kids.forEach(k => ul.appendChild(build(k)));
+    li.appendChild(ul);
+  }
+  return li;
+}
+document.getElementById("map").appendChild(build(DATA));
+document.getElementById("expandAll").onclick = () => document.querySelectorAll("li.node").forEach(n => n.classList.remove("collapsed"));
+document.getElementById("collapseAll").onclick = () => document.querySelectorAll("li.node:not(:first-child)").forEach(n => n.classList.add("collapsed"));
+</script>
+</body>
+</html>

@@ -89,7 +89,7 @@ function Dashboard({ canWrite, go }: { canWrite: boolean; go: (s: string) => voi
   return (
     <section className="screen">
       <header className="screen-head"><div><h2>Tổng quan</h2><p className="text-secondary">Cùng học, xây dựng hệ thống, giao việc, thu nhận bằng chứng và lập báo cáo ESG cho doanh nghiệp giày & rubber boots. Kết quả cần được soát xét theo phạm vi và yêu cầu áp dụng; ứng dụng không cấp chứng nhận.</p></div>
-        <div className="row wrap gap"><button className="button" disabled={!backup} onClick={exportAll}>Xuất toàn bộ Excel</button><button className="button" disabled={!backup} onClick={exportJson}>Sao lưu JSON đầy đủ</button></div></header>
+        <div className="row wrap gap"><button className="button" onClick={() => window.open("so-do-van-hanh.html", "_blank", "noopener")}>🗺️ Sơ đồ vận hành</button><button className="button" disabled={!backup} onClick={exportAll}>Xuất toàn bộ Excel</button><button className="button" disabled={!backup} onClick={exportJson}>Sao lưu JSON đầy đủ</button></div></header>
       {exportErr && <p className="error-text" role="alert">{exportErr}</p>}
       {empty && canWrite && (
         <div className="card callout"><div><strong>Bắt đầu nhanh.</strong> Nạp bộ mẫu đề xuất từ Kế hoạch ESG 2026–2030: 24 KPI, 65 đầu việc cho 13 bộ phận, 17 quý lộ trình, 10 chủ đề trọng yếu, 21 yêu cầu. Không có số liệu thực tế để tránh lẫn với dữ liệu nhà máy.</div>
@@ -340,7 +340,7 @@ function ReportsScreen({ canWrite }: { canWrite: boolean }) {
       await publish({ data: {
         code: templateCode, title: "Khung báo cáo ESG chuẩn ngành giày (9 chương)", type: "annual",
         period: String(new Date().getFullYear()), status: "draft",
-        summary: `Khung 9 chương tổng hợp từ báo cáo ESG thực tế của 4 doanh nghiệp ngành giày (Dunlop Protective Footwear, Yue Yuen, Fulgent Sun, Rocky Brands). Điền nội dung từng chương vào các mục bên dưới; nguyên tắc: chỉ công bố điều chứng minh được bằng dữ liệu.\n\n${outline}`,
+        summary: `Khung 9 chương tổng hợp từ báo cáo ESG thực tế của 5 doanh nghiệp (Dunlop Protective Footwear, Yue Yuen, Fulgent Sun, Rocky Brands — ngành giày; Eclat Textile 2024 — có kiểm toán độc lập). Điền nội dung từng chương vào các mục bên dưới; nguyên tắc: chỉ công bố điều chứng minh được bằng dữ liệu.\n\n${outline}`,
         kpiSummary: "", comparison: "", risks: "", missingData: "", projects: "", decisions: "",
         preparedBy: "", approvedBy: "", publishedAt: "",
       } });

@@ -41,3 +41,9 @@ Chưa cấu hình Supabase thì deployment chỉ cung cấp sandbox. Tạo dự 
 Đây là công cụ quản lý và chuẩn bị báo cáo. Điểm tự đánh giá không phải chứng nhận ESG; nội dung thư viện không thay thế nguồn pháp luật hiện hành hoặc thẩm định độc lập. Phương pháp, ranh giới, bằng chứng và kết quả duyệt phải được doanh nghiệp xác lập.
 
 Xem [audit và kế hoạch kaizen](docs/AUDIT.md), [quy tắc chất lượng dữ liệu](docs/DATA_QUALITY.md) và [kết quả xác minh](docs/VALIDATION.md). Inventory ZIP gốc: [archive-inventory.json](docs/archive-inventory.json).
+
+## Tài liệu báo cáo và hướng dẫn vận hành
+
+- [Khung sườn báo cáo ESG chuẩn hoàn chỉnh](docs/khung-suon-bao-cao-esg.md) — cấu trúc 9 chương tổng hợp từ 5 báo cáo thực tế (Dunlop, Yue Yuen, Fulgent Sun, Rocky Brands, Eclat Textile 2024), checklist nội dung từng chương, ánh xạ GRI và nguồn dữ liệu trên app.
+- [Báo cáo ESG mẫu hoàn chỉnh](docs/bao-cao-mau-esg.md) — mẫu tham chiếu đã điền đầy đủ (⚠️ mọi số liệu đều hư cấu minh họa, không phải số liệu thật).
+- Sơ đồ vận hành cho nhân viên: mở nút **"🗺️ Sơ đồ vận hành"** trên màn Tổng quan, hoặc file `public/so-do-van-hanh.html` (được serve tại `/so-do-van-hanh.html` sau khi deploy).
