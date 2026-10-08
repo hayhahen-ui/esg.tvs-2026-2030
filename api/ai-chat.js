@@ -87,7 +87,8 @@ export default async function handler(req, res) {
   const wanted = String(body.model ?? DEFAULT_AI_MODEL);
   const model = isAllowedModel(wanted) ? wanted : DEFAULT_AI_MODEL;
   if (String(body.action ?? "") === "ping") {
-    const out = await doChat(key, model, [{ role: "user", content: "Trả lời đúng một từ: OK" }], 5, 30000);
+    // max_tokens=16: một số route (vd họ gpt-6-*) yêu cầu max_tokens tối thiểu 16.
+    const out = await doChat(key, model, [{ role: "user", content: "Trả lời đúng một từ: OK" }], 16, 30000);
     if (out.ok) res.status(200).json({ ok: true, model });
     else res.status(200).json({ ok: false, error: out.error ?? "upstream_error", status: out.status, message: out.message });
     return;

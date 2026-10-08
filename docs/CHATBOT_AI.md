@@ -50,3 +50,8 @@ Key và model lưu trên trình duyệt này; chatbot dùng ngay không cần re
 - Theo dõi hạn mức/chi phí trong dashboard của từng nhà cung cấp.
 - Không gửi dữ liệu nội bộ nhạy cảm (lương, bí mật kinh doanh) vào ô chat —
   câu hỏi được gửi tới dịch vụ AI thứ ba.
+
+## Lưu ý model (08/10/2026)
+- Model mặc định `claude-haiku-5.5` chỉ chấp nhận `temperature=1.0` → proxy không gửi `temperature`.
+- Một số route (vd họ `gpt-6-*`) yêu cầu `max_tokens` tối thiểu 16 → ping kiểm tra dùng `max_tokens=16`.
+- Tên model có trong `/v1/models` nhưng route chat chưa triển khai sẽ trả 503 `unavailable_route` — lỗi phía gateway, thử lại sau hoặc hỏi nhà cung cấp.
