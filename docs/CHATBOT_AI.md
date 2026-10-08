@@ -56,6 +56,15 @@ Key và model lưu trên trình duyệt này; chatbot dùng ngay không cần re
 - Một số route (vd họ `gpt-6-*`) yêu cầu `max_tokens` tối thiểu 16 → ping kiểm tra dùng `max_tokens=16`.
 - Tên model có trong `/v1/models` nhưng route chat chưa triển khai sẽ trả 503 `unavailable_route` — lỗi phía gateway, thử lại sau hoặc hỏi nhà cung cấp.
 
+## Smart routing trong chatbot (08/10/2026)
+
+Chatbot tự chọn endpoint theo model đang chọn (dấu ⚖️ trong dropdown):
+- Model chat (vd `claude-haiku-5.5`) → nút "✨ Diễn giải bằng AI" gọi `/api/ai-chat`, trả lời diễn giải tự nhiên.
+- Model decisions (tên kết thúc bằng `-decisions`, vd `gpt-6-luna-decisions`) → nút "⚖️ Đánh giá bằng AI"
+  gọi `/api/ai-decide` với câu hỏi đánh giá mặc định (nội dung có đáng tin để tham khảo không?),
+  hiển thị kết luận + độ tin cậy + xác suất từng phương án.
+- Nút "Kiểm tra kết nối" ở thẻ Experiential Labs cũng route theo model đang chọn nên test đúng endpoint.
+
 ## API Decisions — `/api/ai-decide` (08/10/2026)
 
 Proxy cho **Decisions API** của Experiential Labs (`POST /v1/decisions`): nhận một
